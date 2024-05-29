@@ -6,7 +6,7 @@ on:
     types: [published]
 
 env:
-  DOCKER_IMAGE: radarbase/data-dashboard-backend
+  DOCKER_IMAGE: radarbase/radar-data-dashboard-backend
 
 jobs:
   # Build and push tagged release docker image
@@ -23,7 +23,7 @@ jobs:
         id: docker_meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.DOCKER_IMAGE }}
+          images: ${{ env.DOCKER_IMAGE }}-${{ env.GIT_BRANCH }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}

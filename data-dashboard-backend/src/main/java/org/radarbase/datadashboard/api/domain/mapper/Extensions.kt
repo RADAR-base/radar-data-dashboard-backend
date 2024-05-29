@@ -19,38 +19,20 @@
 package org.radarbase.datadashboard.api.domain.mapper
 
 import org.radarbase.datadashboard.api.api.ObservationDto
-import org.radarbase.datadashboard.api.api.VariableDto
 import org.radarbase.datadashboard.api.domain.model.Observation
-import org.radarbase.datadashboard.api.domain.model.Variable
 import java.time.Duration
 
 fun Observation.toDto(): ObservationDto = ObservationDto(
-    id = id,
-    date = date?.toString(),
-    period = if (date != null && endDate != null) {
+    project = project,
+    subject = subject,
+    source = source,
+    topic = topic,
+    category = category,
+    date = date.toString(),
+    period = if (endDate != null) {
         Duration.between(date, endDate).toString()
     } else {
         null
     },
     value = valueNumeric ?: valueTextual,
-)
-
-fun Map.Entry<Variable, List<Observation>>.toDto(): VariableDto {
-    val (variable, observations) = this
-    return variable.toDto(
-        observations
-            .sortedBy { it.date }
-            .map { it.toDto() },
-    )
-}
-
-fun Variable.toDtoWithoutObservations(): VariableDto = toDto(null)
-
-fun Variable.toDto(observations: List<ObservationDto>?): VariableDto = VariableDto(
-    id = id,
-    name = name,
-    type = type,
-    category = category,
-    observations = observations,
-    dateType = dateType,
 )

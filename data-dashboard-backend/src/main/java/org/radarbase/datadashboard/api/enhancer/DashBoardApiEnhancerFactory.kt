@@ -20,7 +20,6 @@ package org.radarbase.datadashboard.api.enhancer
 
 import org.radarbase.datadashboard.api.config.DashboardApiConfig
 import org.radarbase.datadashboard.api.domain.model.Observation
-import org.radarbase.datadashboard.api.domain.model.Variable
 import org.radarbase.jersey.enhancer.EnhancerFactory
 import org.radarbase.jersey.enhancer.Enhancers
 import org.radarbase.jersey.enhancer.JerseyResourceEnhancer
@@ -41,7 +40,6 @@ class DashBoardApiEnhancerFactory(
             config.database.copy(
                 managedClasses = listOf(
                     Observation::class.jvmName,
-                    Variable::class.jvmName
                 ),
             ),
         ),

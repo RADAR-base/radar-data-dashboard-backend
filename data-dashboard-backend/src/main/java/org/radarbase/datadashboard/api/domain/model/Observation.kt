@@ -18,54 +18,65 @@
 
 package org.radarbase.datadashboard.api.domain.model
 
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import java.time.ZonedDateTime
 import java.util.*
 
 @Entity
 @Table(name = "observation")
-class Observation(
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable = false, nullable = false)
+data class Observation(
+    @Column(nullable = false)
     @Id
-    val id: Long?,
-    @Column(name = "subject_id")
-    val subjectId: String,
-    @ManyToOne
-    @JoinColumn(name = "variable_id")
-    val variable: Variable,
-    val date: ZonedDateTime?,
+    val project: String,
+
+    @Column(nullable = false)
+    @Id
+    val subject: String,
+
+    @Id
+    val source: String,
+
+    @Column(nullable = false)
+    @Id
+    val topic: String,
+
+    val category: String,
+
+    @Column(nullable = false)
+    @Id
+    val variable: String,
+
+    @Column(nullable = false)
+    @Id
+    val date: ZonedDateTime,
+
     @Column(name = "end_date")
     val endDate: ZonedDateTime?,
+
     @Column(name = "value_textual")
     val valueTextual: String?,
+
     @Column(name = "value_numeric")
     val valueNumeric: Double?,
+
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
         other as Observation
-        if (id != null && other.id != null) {
-            return id == other.id
-        }
-
-        return subjectId == other.subjectId &&
+        return subject == other.subject &&
+            topic == other.topic &&
+            category == other.category &&
             variable == other.variable &&
             date == other.date &&
             endDate == other.endDate
     }
 
-    override fun hashCode(): Int = Objects.hash(subjectId, variable, date)
-
-    override fun toString(): String = "Observation(" +
-        "id=$id, " +
-        "variable=$variable, " +
-        "date=$date, " +
-        "endDate=$endDate, " +
-        "valueTextual=${valueTextual.toPrintString()}, " +
-        "valueNumeric=$valueNumeric)"
+    override fun hashCode(): Int = Objects.hash(subject, variable, date)
 
     companion object {
         internal fun String?.toPrintString() = if (this != null) "'$this'" else "null"

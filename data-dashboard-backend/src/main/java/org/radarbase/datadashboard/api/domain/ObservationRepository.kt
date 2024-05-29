@@ -20,30 +20,27 @@ package org.radarbase.datadashboard.api.domain
 
 import jakarta.inject.Provider
 import jakarta.persistence.EntityManager
-import jakarta.persistence.Tuple
 import jakarta.ws.rs.core.Context
+import org.radarbase.datadashboard.api.domain.model.Observation
 import org.radarbase.jersey.hibernate.HibernateRepository
 import org.slf4j.LoggerFactory
-
 
 class ObservationRepository(
     @Context em: Provider<EntityManager>,
 ) : HibernateRepository(em) {
 
-    fun getObservations(topicId: String, subjectId: String): List<Map<String, Any>> {
-        logger.debug("Get observations of topic {} and subject {}", topicId, subjectId)
-        val rows: List<Any?> = transact {
-            createNativeQuery(
-                "SELECT * FROM ${topicId} o WHERE o.userId = '${subjectId}' ORDER BY o.timestamp DESC",
-                Tuple::class.java
-            ).resultList
-        }
-        // Create a list of maps from the rows.
-        return rows.map { row ->
-            (row as Tuple).elements.associate {
-                // Column name is the key, value is the database value.
-                it.alias to row.get(it.alias)
-            }
+    fun getObservations(projectId: String, subjectId: String, topicId: String): List<Observation> {
+        logger.debug("Get observations in topic {} of subject {} in project {}", topicId, subjectId, projectId)
+
+        return transact {
+            createQuery(
+                "SELECT o FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId ORDER BY o.date DESC",
+                Observation::class.java,
+            ).apply {
+                setParameter("projectId", projectId)
+                setParameter("subjectId", subjectId)
+                setParameter("topicId", topicId)
+            }.resultList
         }
     }
 

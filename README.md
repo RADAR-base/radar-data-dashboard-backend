@@ -13,7 +13,7 @@ the data from the RADAR-base kafka service.[]\
 
 Data dashboard applications can use the APIs as follows.
 
-`GET */subject/{subjectId}/topic/{topicId}/observations`
+`GET */project/{projectId}/subject/{subjectId}/topic/{topicId}/observations`
 
 ## Installation
 
@@ -43,8 +43,7 @@ The OAuth client for authorizer-app-backend should have the following properties
 ```properties
 client-id:data_dashboard_api
 client-secret:Confidential
-grant-type:client_credentials
+grant-type:authorization_code,refresh_token
 resources:res_DataDashboardAPI
 scope:MEASUREMENT.READ
 ```
-
