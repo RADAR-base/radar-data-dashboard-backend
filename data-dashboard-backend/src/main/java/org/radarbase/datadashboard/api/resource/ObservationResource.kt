@@ -53,7 +53,7 @@ class ObservationResource(
         @PathParam("topicId") topicId: String,
     ): ObservationListDto {
         if (request.securityContext != null && request.securityContext is RadarSecurityContext) {
-            val userName = (request.securityContext as RadarSecurityContext).userPrincipal
+            val userName = (request.securityContext as RadarSecurityContext).auth.token.username
             log.info("User $userName is accessing observations for $subjectId")
             if (!subjectId.equals(userName)) throw NotFoundException("Subjects can only request their own observations.")
             return observationService.getObservations(projectId = projectId, subjectId = subjectId, topicId = topicId)
