@@ -11,4 +11,7 @@ database:
   password: radarbase
   dialect: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
-    contexts: [dev]
+    contexts: [prod]
+  properties:
+    hibernate.globally_quoted_identifiers: true
+    hibernate.physical_naming_strategy: org.radarbase.datadashboard.api.domain.model.CamelCaseToUppercaseColumnNamingStrategy

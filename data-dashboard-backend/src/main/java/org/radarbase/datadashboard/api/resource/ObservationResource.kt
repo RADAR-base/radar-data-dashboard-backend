@@ -32,7 +32,6 @@ import org.radarbase.datadashboard.api.api.ObservationListDto
 import org.radarbase.datadashboard.api.service.ObservationService
 import org.radarbase.jersey.auth.Authenticated
 import org.radarbase.jersey.auth.NeedsPermission
-import org.radarbase.jersey.auth.filter.RadarSecurityContext
 import org.slf4j.LoggerFactory
 
 @Path("project/{projectId}/subject/{subjectId}/topic/{topicId}")
@@ -46,19 +45,14 @@ class ObservationResource(
 ) {
     @GET
     @Path("observations")
+//    @NeedsPermission(Permission.MEASUREMENT_READ, "projectId", "subjectId")
     @NeedsPermission(Permission.MEASUREMENT_READ)
     fun getObservations(
         @PathParam("projectId") projectId: String,
         @PathParam("subjectId") subjectId: String,
         @PathParam("topicId") topicId: String,
     ): ObservationListDto {
-        if (request.securityContext != null && request.securityContext is RadarSecurityContext) {
-            val userName = (request.securityContext as RadarSecurityContext).auth.token.username
-            log.info("User $userName is accessing observations for $subjectId")
-            if (!subjectId.equals(userName)) throw NotFoundException("Subjects can only request their own observations.")
-            return observationService.getObservations(projectId = projectId, subjectId = subjectId, topicId = topicId)
-        }
-        return ObservationListDto(emptyList())
+        return observationService.getObservations(projectId = projectId, subjectId = subjectId, topicId = topicId)
     }
 
     companion object {
