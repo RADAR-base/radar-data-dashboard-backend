@@ -21,11 +21,9 @@ package org.radarbase.datadashboard.api.resource
 import jakarta.annotation.Resource
 import jakarta.ws.rs.Consumes
 import jakarta.ws.rs.GET
-import jakarta.ws.rs.NotFoundException
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.PathParam
 import jakarta.ws.rs.Produces
-import jakarta.ws.rs.container.ContainerRequestContext
 import jakarta.ws.rs.core.Context
 import org.radarbase.auth.authorization.Permission
 import org.radarbase.datadashboard.api.api.ObservationListDto
@@ -41,12 +39,10 @@ import org.slf4j.LoggerFactory
 @Authenticated
 class ObservationResource(
     @Context private val observationService: ObservationService,
-    @Context private val request: ContainerRequestContext,
 ) {
     @GET
     @Path("observations")
-//    @NeedsPermission(Permission.MEASUREMENT_READ, "projectId", "subjectId")
-    @NeedsPermission(Permission.MEASUREMENT_READ)
+    @NeedsPermission(Permission.MEASUREMENT_READ, "projectId", "subjectId")
     fun getObservations(
         @PathParam("projectId") projectId: String,
         @PathParam("subjectId") subjectId: String,

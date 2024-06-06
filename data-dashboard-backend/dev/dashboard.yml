@@ -11,7 +11,7 @@ auth:
   jwtResourceName: res_DataDashboardAPI
 
 database:
-  url: jdbc:postgresql://127.0.0.1:5432/data
+  url: jdbc:postgresql://127.0.0.1:5432/data-dashboard
   user: radarbase
   password: radarbase
   dialect: org.hibernate.dialect.PostgreSQLDialect
