@@ -24,7 +24,7 @@ import org.radarbase.jersey.hibernate.config.DatabaseConfig
 data class DashboardApiConfig(
     val service: DashboardServiceConfig = DashboardServiceConfig(),
     val auth: AuthConfig = AuthConfig(
-        jwtResourceName = "dummy",
+        jwtResourceName = "res_DataDashboardAPI",
     ),
     val database: DatabaseConfig = DatabaseConfig(),
 ) {
