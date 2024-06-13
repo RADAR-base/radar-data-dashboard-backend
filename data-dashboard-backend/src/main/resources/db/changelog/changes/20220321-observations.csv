@@ -1,4 +1,4 @@
-project;subject;source;topic;category;variable;value_numeric;value_textual;date;end_date
+PROJECT;SUBJECT;SOURCE;TOPIC;CATEGORY;VARIABLE;VALUE_NUMERIC;VALUE_TEXTUAL;DATE;END_DATE
 project-1;sub-1;source-1;questionnaire_answer;baseline_questions;Perceived_Pain_Score;5;NULL;2021-02-20 00:00:00;NULL
 project-1;sub-1;source-1;questionnaire_answer;followup_questions;Name_Of_Physician;NULL;Dr.J.Adams;2021-02-20 00:00:00;NULL
 project-1;sub-2;source-1;questionnaire_answer;baseline_questions;Perceived_Pain_Score;2;NULL;2021-02-20 00:00:00;NULL

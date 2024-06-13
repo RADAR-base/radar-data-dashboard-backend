@@ -20,39 +20,40 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+    objectQuotingStrategy="QUOTE_ALL_OBJECTS">
     <property name="autoIncrement" value="true" dbms="h2,mysql,postgresql,oracle,mssql"/>
 
     <changeSet id="Create observation tables" author="pim" context="dev">
         <createTable tableName="observation">
-            <column name="project" type="varchar(255)">
+            <column name="PROJECT" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="subject" type="varchar(255)">
+            <column name="SUBJECT" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="source" type="varchar(255)">
+            <column name="SOURCE" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="topic" type="varchar(255)">
+            <column name="TOPIC" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="category" type="varchar(255)"/>
-            <column name="variable" type="varchar(255)">
+            <column name="CATEGORY" type="varchar(255)"/>
+            <column name="VARIABLE" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="date" type="timestamp with time zone">
+            <column name="DATE" type="timestamp with time zone">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="end_date" type="timestamp with time zone"/>
-            <column name="value_numeric" type="double"/>
-            <column name="value_textual" type="clob"/>
+            <column name="END_DATE" type="timestamp with time zone"/>
+            <column name="VALUE_NUMERIC" type="double"/>
+            <column name="VALUE_TEXTUAL" type="clob"/>
         </createTable>
 
         <createIndex tableName="observation" indexName="idx_observation_subject_in_topic">
-            <column name="project"/>
-            <column name="subject"/>
-            <column name="topic"/>
+            <column name="PROJECT"/>
+            <column name="SUBJECT"/>
+            <column name="TOPIC"/>
         </createIndex>
 
     </changeSet>
