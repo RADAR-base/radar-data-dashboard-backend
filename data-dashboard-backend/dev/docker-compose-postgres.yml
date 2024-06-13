@@ -16,4 +16,4 @@ services:
     environment:
       POSTGRES_USER: radarbase
       POSTGRES_PASSWORD: radarbase
-      POSTGRES_DB: data
+      POSTGRES_DB: data-dashboard
