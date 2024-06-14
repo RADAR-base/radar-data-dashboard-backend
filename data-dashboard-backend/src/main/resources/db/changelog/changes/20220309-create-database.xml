@@ -21,9 +21,10 @@
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
-    objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-    <property name="autoIncrement" value="true" dbms="h2,mysql,postgresql,oracle,mssql"/>
-
+        objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <!-- Column names are capitalized and quoted because this is how jdbc-connector creates the table in postgres (capitalized and quoted)
+            and we want to be able to use the same table format in the integration tests.
+    -->
     <changeSet id="Create observation tables" author="pim" context="dev">
         <createTable tableName="observation">
             <column name="PROJECT" type="varchar(255)">

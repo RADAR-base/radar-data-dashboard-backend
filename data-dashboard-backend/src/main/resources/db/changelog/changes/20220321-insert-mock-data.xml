@@ -22,11 +22,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
     objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-
+    <!-- Column names are capitalized and quoted because this is how jdbc-connector creates the table in postgres (capitalized and quoted)
+            and we want to be able to use the same table format in the integration tests.
+    -->
     <changeSet id="Add mock data for observations" author="pim" context="dev">
         <loadData
             file="db/changelog/changes/20220321-observations.csv"
             separator=";"
+            commentLineStartsWith="#"
             tableName="observation"
             usePreparedStatements="true">
             <column name="VALUE_NUMERIC" type="NUMERIC"/>
