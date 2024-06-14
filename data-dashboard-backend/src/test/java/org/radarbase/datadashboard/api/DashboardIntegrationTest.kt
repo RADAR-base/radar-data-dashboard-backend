@@ -35,6 +35,8 @@ import org.radarbase.jersey.auth.AuthValidator
 import org.radarbase.jersey.auth.disabled.DisabledAuthValidator
 import org.radarbase.jersey.config.ConfigLoader
 
+// These tests are ok, but the injection of the DisabledAuthValidator is not correct.
+// I do not know how to fix it.
 class DashboardIntegrationTest : JerseyTest() {
 
     lateinit var disabledAuthValidator: DisabledAuthValidator
@@ -56,7 +58,7 @@ class DashboardIntegrationTest : JerseyTest() {
         return GrizzlyWebTestContainerFactory()
     }
 
-    // See https://stackoverflow.com/questions/37902211/test-case-for-testing-a-jersey-web-resource-using-grizzle-is-giving-me-404
+    // See https://stackoverflow.com/questions/37902211/test-case-for-testing-a-jersey-web-resource-using-grizzly-is-giving-me-404
     override fun configureDeployment(): DeploymentContext {
         return ServletDeploymentContext.forServlet(ServletContainer(configure())).build()
     }
@@ -70,7 +72,7 @@ class DashboardIntegrationTest : JerseyTest() {
 
     @Test
     fun testGetObservationsNoToken() {
-        val response = target("project/project-1/sub-1/topic/phone_battery_level/observations").request().get()
+        val response = target("project/project-1/subject/sub-1/topic/phone_battery_level/observations").request().get()
         Assertions.assertEquals(401, response.status)
     }
 
