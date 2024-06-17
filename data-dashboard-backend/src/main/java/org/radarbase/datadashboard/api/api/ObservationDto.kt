@@ -37,7 +37,7 @@ data class ObservationDto(
     val category: String?,
 
     /** Date or date-time of the observation. */
-    val date: String?,
+    val observation_time: String?,
 
     /**
      * For how long the observation was valid. Null if there is no duration, or if the observation

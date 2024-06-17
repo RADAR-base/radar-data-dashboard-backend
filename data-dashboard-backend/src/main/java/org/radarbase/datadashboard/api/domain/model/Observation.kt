@@ -39,7 +39,7 @@ data class Observation(
     @Id
     val source: String,
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "topic_name")
     @Id
     val topic: String,
 
@@ -49,12 +49,12 @@ data class Observation(
     @Id
     val variable: String,
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "observation_time")
     @Id
-    val date: ZonedDateTime,
+    val observationTime: ZonedDateTime,
 
-    @Column(name = "end_date")
-    val endDate: ZonedDateTime?,
+    @Column(name = "observation_time_end")
+    val observationTimeEnd: ZonedDateTime?,
 
     @Column(name = "value_textual")
     val valueTextual: String?,
@@ -72,11 +72,11 @@ data class Observation(
             topic == other.topic &&
             category == other.category &&
             variable == other.variable &&
-            date == other.date &&
-            endDate == other.endDate
+            observationTime == other.observationTime &&
+            observationTimeEnd == other.observationTimeEnd
     }
 
-    override fun hashCode(): Int = Objects.hash(subject, variable, date)
+    override fun hashCode(): Int = Objects.hash(subject, variable, observationTime)
 
     companion object {
         internal fun String?.toPrintString() = if (this != null) "'$this'" else "null"
