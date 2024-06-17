@@ -34,7 +34,7 @@ class ObservationRepository(
 
         return transact {
             createQuery(
-                "SELECT o FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId ORDER BY o.date DESC",
+                "SELECT o FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId ORDER BY o.observationTime DESC",
                 Observation::class.java,
             ).apply {
                 setParameter("projectId", projectId)

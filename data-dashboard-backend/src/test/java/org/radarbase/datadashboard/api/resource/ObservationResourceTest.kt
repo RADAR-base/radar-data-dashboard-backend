@@ -106,10 +106,10 @@ class ObservationResourceTest : JerseyTest() {
             topic = "topic-1",
             category = "category-1",
             variable = "variable-1",
-            date = ZonedDateTime.now(),
+            observationTime = ZonedDateTime.now(),
+            observationTimeEnd = null,
             valueTextual = "value1",
             valueNumeric = null,
-            endDate = null,
         )
     }
 }
