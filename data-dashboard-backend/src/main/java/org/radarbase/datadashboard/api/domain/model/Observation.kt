@@ -56,6 +56,8 @@ data class Observation(
     @Column(name = "observation_time_end")
     val observationTimeEnd: ZonedDateTime?,
 
+    val type: String,
+
     @Column(name = "value_textual")
     val valueTextual: String?,
 

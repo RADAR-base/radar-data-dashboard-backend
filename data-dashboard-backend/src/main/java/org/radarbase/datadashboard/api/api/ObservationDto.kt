@@ -48,6 +48,9 @@ data class ObservationDto(
      */
     val period: String?,
 
+    /** Type of the value field; can be INTEGER, DOUBLE, STRING or STRING_JSON. */
+    val type: String,
+
     /**
      * Value of the observation. This should adhere to the coding system and type of the
      * variable.
