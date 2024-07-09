@@ -35,5 +35,6 @@ fun Observation.toDto(): ObservationDto = ObservationDto(
     } else {
         null
     },
+    type = type,
     value = valueNumeric ?: valueTextual,
 )
