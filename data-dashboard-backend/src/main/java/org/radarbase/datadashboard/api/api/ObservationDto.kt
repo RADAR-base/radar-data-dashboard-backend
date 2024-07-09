@@ -36,6 +36,9 @@ data class ObservationDto(
     /** Category of the observation (optional). */
     val category: String?,
 
+    /** Unique identifier of the variable. */
+    val variable: String?,
+
     /** Date or date-time of the observation. */
     val observation_time: String?,
 

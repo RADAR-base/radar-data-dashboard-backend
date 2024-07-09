@@ -28,6 +28,7 @@ fun Observation.toDto(): ObservationDto = ObservationDto(
     source = source,
     topic = topic,
     category = category,
+    variable = variable,
     observation_time = observationTime.toString(),
     period = if (observationTimeEnd != null) {
         Duration.between(observationTime, observationTimeEnd).toString()
