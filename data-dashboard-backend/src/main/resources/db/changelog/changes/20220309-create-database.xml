@@ -43,10 +43,10 @@
             <column name="VARIABLE" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="DATE" type="timestamp with time zone">
+            <column name="OBSERVATION_TIME" type="timestamp with time zone">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="END_DATE" type="timestamp with time zone"/>
+            <column name="OBSERVATION_TIME_END" type="timestamp with time zone"/>
             <column name="TYPE" type="data type of value"/>
             <column name="VALUE_NUMERIC" type="double"/>
             <column name="VALUE_TEXTUAL" type="clob"/>
