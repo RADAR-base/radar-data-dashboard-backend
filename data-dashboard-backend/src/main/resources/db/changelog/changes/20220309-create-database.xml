@@ -47,7 +47,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="OBSERVATION_TIME_END" type="timestamp with time zone"/>
-            <column name="TYPE" type="data type of value"/>
+            <column name="TYPE" type="varchar(25)"/>
             <column name="VALUE_NUMERIC" type="double"/>
             <column name="VALUE_TEXTUAL" type="clob"/>
         </createTable>
