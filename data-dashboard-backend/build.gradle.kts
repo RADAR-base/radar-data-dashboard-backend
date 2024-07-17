@@ -4,6 +4,7 @@ plugins {
     kotlin("plugin.noarg")
     kotlin("plugin.jpa")
     kotlin("plugin.allopen")
+    id("io.sentry.jvm.gradle") version "4.10.0"
 }
 
 application {
@@ -31,4 +32,14 @@ allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")
     annotation("jakarta.persistence.Embeddable")
+}
+
+sentry {
+    // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
+    // This enables source context, allowing you to see your source
+    // code as part of your stack traces in Sentry.
+    includeSourceContext = true
+    org = "radar-base"
+    projectName = "data-dashboard-backend"
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }

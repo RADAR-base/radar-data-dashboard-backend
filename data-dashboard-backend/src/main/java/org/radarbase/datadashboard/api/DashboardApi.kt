@@ -18,6 +18,8 @@
 
 package org.radarbase.datadashboard.api
 
+import io.sentry.Sentry
+import io.sentry.SentryOptions
 import org.radarbase.datadashboard.api.config.DashboardApiConfig
 import org.radarbase.jersey.GrizzlyServer
 import org.radarbase.jersey.config.ConfigLoader
@@ -42,6 +44,16 @@ object Main {
         val configFile = args.firstOrNull() ?: "dashboard.yml"
         val config: DashboardApiConfig = ConfigLoader.loadConfig(configFile, args)
         val resources = ConfigLoader.loadResources(config.service.resourceConfig, config.withEnv())
+
+        Sentry.init { options: SentryOptions ->
+            options.dsn =
+                "https://6a0679aa8e76466de1f22a03af1cf335@o4507611449065472.ingest.de.sentry.io/4507611454242896"
+            // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+            // We recommend adjusting this value in production.
+            options.tracesSampleRate = 1.0
+            // When first trying Sentry it's good to see what the SDK is doing:
+            options.isDebug = true
+        }
 
         GrizzlyServer(config.service.baseUri, resources).run {
             listen()
