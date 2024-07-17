@@ -18,6 +18,8 @@
 
 package org.radarbase.datadashboard.api
 
+import io.sentry.Sentry
+import io.sentry.SentryOptions
 import org.radarbase.datadashboard.api.config.DashboardApiConfig
 import org.radarbase.jersey.GrizzlyServer
 import org.radarbase.jersey.config.ConfigLoader
