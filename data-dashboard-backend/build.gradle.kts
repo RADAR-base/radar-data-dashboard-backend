@@ -21,6 +21,9 @@ dependencies {
     }
     implementation("org.radarbase:radar-commons-kotlin:${Versions.radarCommons}")
 
+    implementation("com.mindscapehq:core:3.0.0")
+    implementation("com.mindscapehq:webprovider:3.0.0")
+
     testImplementation("org.mockito:mockito-core:${Versions.mockitoKotlin}")
     testImplementation("org.mockito.kotlin:mockito-kotlin:${Versions.mockitoKotlin}")
     testImplementation("org.glassfish.jersey.test-framework:jersey-test-framework-core:${Versions.jersey}")

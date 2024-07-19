@@ -18,6 +18,9 @@
 
 package org.radarbase.datadashboard.api
 
+import com.mindscapehq.raygun4java.core.IRaygunClientFactory
+import com.mindscapehq.raygun4java.core.RaygunClient
+import com.mindscapehq.raygun4java.core.RaygunClientFactory
 import io.sentry.Sentry
 import io.sentry.SentryOptions
 import org.radarbase.datadashboard.api.config.DashboardApiConfig
@@ -53,6 +56,19 @@ object Main {
             options.tracesSampleRate = 1.0
             // When first trying Sentry it's good to see what the SDK is doing:
             options.isDebug = true
+
+        }
+        val raygunFactory: IRaygunClientFactory = RaygunClientFactory("T6N90OBA1JBDQeQ8vIwg")
+            .withVersion("1.2.3")
+            .withTag("beta")
+            .withData("prod", false)
+        val raygunClient: RaygunClient = raygunFactory.newClient()
+
+        try {
+            throw Exception("This is a test exception")
+        } catch (e: Exception) {
+            Sentry.captureException(e);
+            raygunClient.send(e)
         }
 
         GrizzlyServer(config.service.baseUri, resources).run {
