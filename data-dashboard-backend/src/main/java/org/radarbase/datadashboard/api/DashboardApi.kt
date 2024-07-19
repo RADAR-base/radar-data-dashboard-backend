@@ -18,6 +18,7 @@
 
 package org.radarbase.datadashboard.api
 
+import com.bugsnag.Bugsnag
 import com.mindscapehq.raygun4java.core.IRaygunClientFactory
 import com.mindscapehq.raygun4java.core.RaygunClient
 import com.mindscapehq.raygun4java.core.RaygunClientFactory
@@ -64,11 +65,14 @@ object Main {
             .withData("prod", false)
         val raygunClient: RaygunClient = raygunFactory.newClient()
 
+        val bugsnag: Bugsnag = Bugsnag("28921adc65be4fd1643684b73ab0b636")
+
         try {
             throw Exception("This is a test exception")
         } catch (e: Exception) {
-            Sentry.captureException(e);
+            Sentry.captureException(e)
             raygunClient.send(e)
+            bugsnag.notify(e)
         }
 
         GrizzlyServer(config.service.baseUri, resources).run {
