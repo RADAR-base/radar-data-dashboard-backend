@@ -12,7 +12,6 @@ application {
 }
 
 dependencies {
-    api(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
 
     implementation("org.radarbase:radar-jersey:${Versions.radarJersey}")
