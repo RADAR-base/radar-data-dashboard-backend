@@ -24,7 +24,7 @@
                     pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
             />
         </Console>
-<!--        Sentry DNS must be set via SENTRY_DSN environment variable-->
+        <!-- For Sentry to work the DSN must be set via SENTRY_DSN environment variable-->
         <Sentry name="Sentry" />
     </appenders>
 
