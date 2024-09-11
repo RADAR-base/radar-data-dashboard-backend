@@ -20,6 +20,7 @@ dependencies {
         runtimeOnly("org.postgresql:postgresql:${Versions.postgresql}")
     }
     implementation("org.radarbase:radar-commons-kotlin:${Versions.radarCommons}")
+    annotationProcessor("org.apache.logging.log4j:log4j-core:2.20.0")
 
     implementation("com.mindscapehq:core:3.0.0")
     implementation("com.mindscapehq:webprovider:3.0.0")

@@ -17,10 +17,7 @@
   ~  */
   -->
 
-<configuration
-        status="warn"
-        packages="org.apache.logging.log4j.core,io.sentry.log4j2"
->
+<configuration status="warn">
     <appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout
