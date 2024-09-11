@@ -18,12 +18,6 @@
 
 package org.radarbase.datadashboard.api
 
-import com.bugsnag.Bugsnag
-import com.mindscapehq.raygun4java.core.IRaygunClientFactory
-import com.mindscapehq.raygun4java.core.RaygunClient
-import com.mindscapehq.raygun4java.core.RaygunClientFactory
-import io.sentry.Sentry
-import io.sentry.SentryOptions
 import org.radarbase.datadashboard.api.config.DashboardApiConfig
 import org.radarbase.jersey.GrizzlyServer
 import org.radarbase.jersey.config.ConfigLoader
@@ -48,32 +42,6 @@ object Main {
         val configFile = args.firstOrNull() ?: "dashboard.yml"
         val config: DashboardApiConfig = ConfigLoader.loadConfig(configFile, args)
         val resources = ConfigLoader.loadResources(config.service.resourceConfig, config.withEnv())
-
-        Sentry.init { options: SentryOptions ->
-            options.dsn =
-                "https://6a0679aa8e76466de1f22a03af1cf335@o4507611449065472.ingest.de.sentry.io/4507611454242896"
-            // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-            // We recommend adjusting this value in production.
-            options.tracesSampleRate = 1.0
-            // When first trying Sentry it's good to see what the SDK is doing:
-            options.isDebug = true
-
-        }
-        val raygunFactory: IRaygunClientFactory = RaygunClientFactory("T6N90OBA1JBDQeQ8vIwg")
-            .withVersion("1.2.3")
-            .withTag("beta")
-            .withData("prod", false)
-        val raygunClient: RaygunClient = raygunFactory.newClient()
-
-        val bugsnag: Bugsnag = Bugsnag("28921adc65be4fd1643684b73ab0b636")
-
-        try {
-            throw Exception("This is a test exception")
-        } catch (e: Exception) {
-            Sentry.captureException(e)
-            raygunClient.send(e)
-            bugsnag.notify(e)
-        }
 
         GrizzlyServer(config.service.baseUri, resources).run {
             listen()
