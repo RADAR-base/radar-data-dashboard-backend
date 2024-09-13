@@ -19,9 +19,6 @@ dependencies {
     }
     implementation("org.radarbase:radar-commons-kotlin:${Versions.radarCommons}")
 
-    // TODO move to radar-commons-kotlin
-    annotationProcessor("org.apache.logging.log4j:log4j-core:2.20.0")
-
     testImplementation("org.mockito:mockito-core:${Versions.mockitoKotlin}")
     testImplementation("org.mockito.kotlin:mockito-kotlin:${Versions.mockitoKotlin}")
     testImplementation("org.glassfish.jersey.test-framework:jersey-test-framework-core:${Versions.jersey}")
