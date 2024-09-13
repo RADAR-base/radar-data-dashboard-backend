@@ -31,18 +31,3 @@ allOpen {
     annotation("jakarta.persistence.MappedSuperclass")
     annotation("jakarta.persistence.Embeddable")
 }
-
-sentry {
-    org = rootProject.group as String
-    projectName = project.name
-    if (System.getenv("SENTRY_AUTH_TOKEN") != null) {
-        logger.info("Sentry auth token found, enabling source context")
-        // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
-        // This allows you to see your source code as part of your stack traces in Sentry.
-        includeSourceContext = true
-        authToken = System.getenv("SENTRY_AUTH_TOKEN")
-    } else {
-        logger.info("Not Sentry auth token found. Source context will not be uploaded to Sentry.")
-        includeSourceContext = false
-    }
-}
