@@ -18,13 +18,13 @@
 
 @Suppress("ConstPropertyName")
 object Versions {
-    const val project = "4.4.1"
+    const val project = "0.2.0"
 
     const val java = 17
 
     const val kotlin = "1.9.10"
 
-    const val radarCommons = "1.1.1"
+    const val radarCommons = "1.1.3-SNAPSHOT"
     const val radarJersey = "0.10.0"
     const val postgresql = "42.6.0"
     const val ktor = "2.3.5"
@@ -37,6 +37,5 @@ object Versions {
     const val junit = "5.10.0"
     const val mockitoKotlin = "5.1.0"
     const val hamcrest = "2.2"
-
-    const val gradle = "8.4"
+    const val ktlint = "1.3.1"
 }

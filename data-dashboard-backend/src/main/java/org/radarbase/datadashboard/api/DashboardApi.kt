@@ -25,12 +25,13 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.system.exitProcess
 
-object Main {
+object DashboardApi {
 
     init {
         System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager")
     }
-    private val logger: Logger = LoggerFactory.getLogger(Main.javaClass)
+
+    private val logger: Logger = LoggerFactory.getLogger(DashboardApi.javaClass)
 
     @JvmStatic
     fun main(args: Array<String>) {
