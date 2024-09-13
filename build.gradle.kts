@@ -44,6 +44,7 @@ subprojects {
         slf4jVersion.set(Versions.slf4j)
         log4j2Version.set(Versions.log4j2)
         junitVersion.set(Versions.junit)
+        sentryEnabled.set(true)
     }
 
     radarPublishing {
