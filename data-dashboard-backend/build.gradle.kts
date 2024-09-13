@@ -4,7 +4,6 @@ plugins {
     kotlin("plugin.noarg")
     kotlin("plugin.jpa")
     kotlin("plugin.allopen")
-    id("io.sentry.jvm.gradle") version "4.10.0"
 }
 
 application {
@@ -19,6 +18,8 @@ dependencies {
         runtimeOnly("org.postgresql:postgresql:${Versions.postgresql}")
     }
     implementation("org.radarbase:radar-commons-kotlin:${Versions.radarCommons}")
+
+    // TODO move to radar-commons-kotlin
     annotationProcessor("org.apache.logging.log4j:log4j-core:2.20.0")
 
     testImplementation("org.mockito:mockito-core:${Versions.mockitoKotlin}")
@@ -35,11 +36,16 @@ allOpen {
 }
 
 sentry {
-    // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
-    // This enables source context, allowing you to see your source
-    // code as part of your stack traces in Sentry.
-    includeSourceContext = true
-    org = "radar-base"
-    projectName = "data-dashboard-backend"
-    authToken = System.getenv("SENTRY_AUTH_TOKEN")
+    org = rootProject.group as String
+    projectName = project.name
+    if (System.getenv("SENTRY_AUTH_TOKEN") != null) {
+        logger.info("Sentry auth token found, enabling source context")
+        // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
+        // This allows you to see your source code as part of your stack traces in Sentry.
+        includeSourceContext = true
+        authToken = System.getenv("SENTRY_AUTH_TOKEN")
+    } else {
+        logger.info("Not Sentry auth token found. Source context will not be uploaded to Sentry.")
+        includeSourceContext = false
+    }
 }
