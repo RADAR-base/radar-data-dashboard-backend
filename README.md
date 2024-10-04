@@ -2,7 +2,19 @@
 
 Application that provides a REST API to provide Variables (measured modalities) and related Observations (measurements)
 for Subjects (participants). The data layer connects to the TimescaleDB database that is provisioned with (a subset of)
-the data from the RADAR-base kafka service.[]\
+the data from the RADAR-base kafka service.[]
+
+<!-- TOC -->
+
+* [RADAR-base Data Dashboard backend](#radar-base-data-dashboard-backend)
+    * [Features supported](#features-supported)
+    * [APIs to be used by REST Source-Connectors](#apis-to-be-used-by-rest-source-connectors)
+    * [Installation](#installation)
+    * [Authorization](#authorization)
+        * [Registering OAuth Clients with ManagementPortal](#registering-oauth-clients-with-managementportal)
+    * [Sentry monitoring](#sentry-monitoring)
+
+<!-- TOC -->
 
 ## Features supported
 
@@ -47,3 +59,11 @@ grant-type:authorization_code,refresh_token
 resources:res_DataDashboardAPI
 scope:MEASUREMENT.READ
 ```
+
+## Sentry monitoring
+
+To enable Sentry monitoring:
+
+1. Set a `SENTRY_DSN` environment variable that points to the desired Sentry DSN.
+2. (Optional) Set the `SENTRY_LOG_LEVEL` environment variable to control the minimum log level of events sent to Sentry.
+   The default log level for Sentry is `WARN`. Possible values are `TRACE`, `DEBUG`, `INFO`, `WARN`, and `ERROR`.
