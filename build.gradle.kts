@@ -17,11 +17,13 @@
  */
 
 import org.radarbase.gradle.plugin.radarKotlin
+import org.radarbase.gradle.plugin.radarPublishing
 
 plugins {
     id("org.radarbase.radar-root-project") version Versions.radarCommons
     id("org.radarbase.radar-dependency-management") version Versions.radarCommons
     id("org.radarbase.radar-kotlin") version Versions.radarCommons apply false
+    id("org.radarbase.radar-publishing") version Versions.radarCommons apply false
     kotlin("plugin.serialization") version Versions.kotlin apply false
     kotlin("plugin.noarg") version Versions.kotlin apply false
     kotlin("plugin.jpa") version Versions.kotlin apply false
@@ -30,11 +32,11 @@ plugins {
 
 radarRootProject {
     projectVersion.set(Versions.project)
-    gradleVersion.set(Versions.gradle)
 }
 
 subprojects {
     apply(plugin = "org.radarbase.radar-kotlin")
+    apply(plugin = "org.radarbase.radar-publishing")
 
     radarKotlin {
         javaVersion.set(Versions.java)
@@ -42,5 +44,17 @@ subprojects {
         slf4jVersion.set(Versions.slf4j)
         log4j2Version.set(Versions.log4j2)
         junitVersion.set(Versions.junit)
+    }
+
+    radarPublishing {
+        githubUrl.set("https://github.com/RADAR-base/radar-data-dashboard-backend")
+        developers {
+            developer {
+                id.set("pvanierop")
+                name.set("Pim van Nierop")
+                email.set("pim@thehyve.nl")
+                organization.set("radar-base")
+            }
+        }
     }
 }
