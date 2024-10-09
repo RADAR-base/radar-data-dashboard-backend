@@ -37,4 +37,5 @@ object Versions {
     const val junit = "5.10.0"
     const val mockitoKotlin = "5.1.0"
     const val hamcrest = "2.2"
+    const val ktlint = "1.3.1"
 }
