@@ -53,7 +53,7 @@ subprojects {
                 id.set("pvanierop")
                 name.set("Pim van Nierop")
                 email.set("pim@thehyve.nl")
-                organization.set("The Hyve")
+                organization.set("radar-base")
             }
         }
     }
