@@ -30,28 +30,29 @@ import org.glassfish.jersey.test.spi.TestContainerFactory
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.radarbase.auth.authorization.AuthorizationOracle
 import org.radarbase.datadashboard.api.config.DashboardApiConfig
-import org.radarbase.datadashboard.api.resource.ObservationResource
+import org.radarbase.datadashboard.api.enhancer.DashBoardApiEnhancerFactory
 import org.radarbase.jersey.auth.AuthValidator
 import org.radarbase.jersey.auth.disabled.DisabledAuthValidator
+import org.radarbase.jersey.auth.disabled.DisabledAuthorizationOracle
 import org.radarbase.jersey.config.ConfigLoader
 
-// These tests are ok, but the injection of the DisabledAuthValidator is not correct.
-// I do not know how to fix it.
+// These tests are not yet working because mocking/stubbing token validation is not yet working.
 class DashboardIntegrationTest : JerseyTest() {
-
-    lateinit var disabledAuthValidator: DisabledAuthValidator
 
     override fun configure(): ResourceConfig {
         val config: DashboardApiConfig = ConfigLoader.loadConfig("src/test/resources/dashboard_test.yml", emptyArray())
         val resourceConfig = ConfigLoader.loadResources(config.service.resourceConfig, config)
-        disabledAuthValidator = DisabledAuthValidator(config.auth)
+        resourceConfig.register(DashBoardApiEnhancerFactory::class)
+        val disabledAuthorizationOracle = DisabledAuthorizationOracle()
+        val disabledAuthValidator = DisabledAuthValidator(config.auth)
         resourceConfig.register(object : AbstractBinder() {
             override fun configure() {
+                bind(disabledAuthorizationOracle).to(AuthorizationOracle::class.java).ranked(1)
                 bind(disabledAuthValidator).to(AuthValidator::class.java).ranked(1)
             }
         })
-        resourceConfig.register(ObservationResource::class.java)
         return resourceConfig
     }
 
@@ -74,18 +75,24 @@ class DashboardIntegrationTest : JerseyTest() {
     @Disabled("Token integration tests do not work yet.")
     @Test
     fun testGetObservationsNoToken() {
-        val response = target("project/project-1/subject/sub-1/topic/phone_battery_level/observations").request().get()
-        Assertions.assertEquals(401, response.status)
+        target("project/project-1/subject/sub-1/topic/phone_battery_level/observations")
+            .request()
+            .get()
+            .use { response ->
+                Assertions.assertEquals(401, response.status)
+            }
     }
 
     @Disabled("Token integration tests do not work yet.")
     @Test
     fun testGetObservationsWithToken() {
-        val response = target("project/project-1/subject/sub-1/topic/phone_battery_level/observations")
+        target("project/project-1/subject/sub-1/topic/phone_battery_level/observations")
             .request()
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + "... encoded token ...")
             .get()
-        Assertions.assertEquals(200, response.status)
+            .use { response ->
+                Assertions.assertEquals(200, response.status)
+            }
     }
 
     // TODO add more tests that include the token validation.

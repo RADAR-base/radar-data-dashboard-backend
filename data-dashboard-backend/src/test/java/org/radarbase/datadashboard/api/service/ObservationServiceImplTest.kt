@@ -18,41 +18,42 @@
 
 package org.radarbase.datadashboard.api.service
 
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.radarbase.datadashboard.api.api.ObservationListDto
-import org.radarbase.datadashboard.api.domain.ObservationRepository
+import org.radarbase.datadashboard.api.domain.ObservationRepositoryImpl
 import org.radarbase.datadashboard.api.domain.mapper.toDto
 import org.radarbase.datadashboard.api.domain.model.Observation
 import java.time.ZonedDateTime
 
-class ObservationServiceTest {
+class ObservationServiceImplTest {
 
     // Create a Mockito mock of the ObservationRepository. This is instantiated in the init block.
     @Mock
-    private lateinit var observationRepository: ObservationRepository
+    private lateinit var observationRepository: ObservationRepositoryImpl
 
     private var observationId: Long = 1
     private val projectId = "project-1"
     private val subjectId = "sub-1"
     private val topicId = "topic-1"
 
-    private val observationService: ObservationService
+    private val observationService: ObservationServiceImpl
 
     init {
         // Initialize all Mockito mocks.
         MockitoAnnotations.openMocks(this)
-        observationService = ObservationService(observationRepository)
+        observationService = ObservationServiceImpl(observationRepository)
     }
 
     /** This test does not test much (only whether the service calls the repository).
      *  I made it mainly to document how to write a test with mocking.
      * */
     @Test
-    fun test_getObservations1() {
+    fun test_getObservations1() = runBlocking {
         // Create some fake observations that are returned by the repository.
         // Each observation is linked to a Variable.
         val observations: List<Observation> = listOf(createObservation(), createObservation(), createObservation(), createObservation())
