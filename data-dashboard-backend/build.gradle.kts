@@ -10,7 +10,7 @@ plugins {
 }
 
 application {
-    mainClass.set("org.radarbase.datadashboard.api.Main")
+    mainClass.set("org.radarbase.datadashboard.api.DashboardApi")
 }
 
 dependencies {
