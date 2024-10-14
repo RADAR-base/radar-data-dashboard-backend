@@ -18,8 +18,18 @@
 
 package org.radarbase.datadashboard.api.service
 
+import jakarta.ws.rs.core.Context
 import org.radarbase.datadashboard.api.api.ObservationListDto
+import org.radarbase.datadashboard.api.domain.ObservationRepository
+import org.radarbase.datadashboard.api.domain.mapper.toDto
 
-interface ObservationService {
-    suspend fun getObservations(projectId: String, subjectId: String, topicId: String): ObservationListDto
+class ObservationServiceImpl(
+    @Context private val observationRepository: ObservationRepository,
+) : ObservationService {
+    override suspend fun getObservations(projectId: String, subjectId: String, topicId: String): ObservationListDto {
+        val result = this.observationRepository.getObservations(projectId = projectId, topicId = topicId, subjectId = subjectId)
+        return ObservationListDto(
+            result.map { it.toDto() },
+        )
+    }
 }

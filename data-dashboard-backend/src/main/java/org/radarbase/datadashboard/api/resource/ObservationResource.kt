@@ -19,17 +19,20 @@
 package org.radarbase.datadashboard.api.resource
 
 import jakarta.annotation.Resource
+import jakarta.inject.Singleton
 import jakarta.ws.rs.Consumes
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.PathParam
 import jakarta.ws.rs.Produces
+import jakarta.ws.rs.container.AsyncResponse
+import jakarta.ws.rs.container.Suspended
 import jakarta.ws.rs.core.Context
 import org.radarbase.auth.authorization.Permission
-import org.radarbase.datadashboard.api.api.ObservationListDto
 import org.radarbase.datadashboard.api.service.ObservationService
 import org.radarbase.jersey.auth.Authenticated
 import org.radarbase.jersey.auth.NeedsPermission
+import org.radarbase.jersey.service.AsyncCoroutineService
 import org.slf4j.LoggerFactory
 
 @Path("project/{projectId}/subject/{subjectId}/topic/{topicId}")
@@ -37,8 +40,10 @@ import org.slf4j.LoggerFactory
 @Produces("application/json")
 @Consumes("application/json")
 @Authenticated
+@Singleton
 class ObservationResource(
     @Context private val observationService: ObservationService,
+    @Context private val asyncService: AsyncCoroutineService,
 ) {
     @GET
     @Path("observations")
@@ -47,8 +52,9 @@ class ObservationResource(
         @PathParam("projectId") projectId: String,
         @PathParam("subjectId") subjectId: String,
         @PathParam("topicId") topicId: String,
-    ): ObservationListDto {
-        return observationService.getObservations(projectId = projectId, subjectId = subjectId, topicId = topicId)
+        @Suspended asyncResponse: AsyncResponse,
+    ) = asyncService.runAsCoroutine(asyncResponse) {
+        observationService.getObservations(projectId = projectId, subjectId = subjectId, topicId = topicId)
     }
 
     companion object {

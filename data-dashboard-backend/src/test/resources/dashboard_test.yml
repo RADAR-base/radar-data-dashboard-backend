@@ -15,6 +15,7 @@ database:
   user:
   password:
   dialect: org.hibernate.dialect.H2Dialect
+  driver: org.h2.Driver
   liquibase:
     contexts: [dev]
   properties:

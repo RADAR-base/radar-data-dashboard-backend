@@ -19,6 +19,7 @@
 package org.radarbase.datadashboard.api.resource
 
 import jakarta.ws.rs.core.Application
+import kotlinx.coroutines.runBlocking
 import org.glassfish.hk2.utilities.binding.AbstractBinder
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.test.JerseyTest
@@ -32,6 +33,8 @@ import org.radarbase.datadashboard.api.api.ObservationListDto
 import org.radarbase.datadashboard.api.domain.mapper.toDto
 import org.radarbase.datadashboard.api.domain.model.Observation
 import org.radarbase.datadashboard.api.service.ObservationService
+import org.radarbase.jersey.service.AsyncCoroutineService
+import org.radarbase.upload.mock.MockAsyncCoroutineService
 import java.time.ZonedDateTime
 
 class ObservationResourceTest : JerseyTest() {
@@ -40,7 +43,6 @@ class ObservationResourceTest : JerseyTest() {
     lateinit var observationService: ObservationService
 
     private lateinit var observationListDto: ObservationListDto
-    private var observationId: Long = 1
     private val projectId = "project-1"
     private val subjectId = "sub-1"
     private val topicId = "topic-1"
@@ -54,6 +56,7 @@ class ObservationResourceTest : JerseyTest() {
         resourceConfig.register(object : AbstractBinder() {
             override fun configure() {
                 bind(observationService).to(ObservationService::class.java)
+                bind(MockAsyncCoroutineService()).to(AsyncCoroutineService::class.java)
             }
         })
         return resourceConfig
@@ -70,32 +73,48 @@ class ObservationResourceTest : JerseyTest() {
     }
 
     @Test
-    fun testGetObservations() {
+    fun testGetObservations() = runBlocking {
         // Instruct the mock to return the fake observations when called.
         `when`(observationService.getObservations(projectId = projectId, subjectId = subjectId, topicId = topicId)).thenReturn(observationListDto)
         // Make the call to the REST endpoint.
-        val response = target("project/project-1/subject/sub-1/topic/topic-1/observations").request().get()
-        // Expect the http response to be OK and the same as the expected DTO.
-        assertEquals(200, response.status)
-        assertEquals(observationListDto, response.readEntity(ObservationListDto::class.java))
+        target("project/project-1/subject/sub-1/topic/topic-1/observations")
+            .request()
+            .get()
+            .use { response ->
+                // Expect the http response to be OK and the same as the expected DTO.
+                assertEquals(200, response.status)
+                assertEquals(observationListDto, response.readEntity(ObservationListDto::class.java))
+            }
     }
 
     @Test
-    fun testGetObservations_failNoSubjectId() {
-        val response = target("project/project-1/subject//topic/topic-1/observations").request().get()
-        assertEquals(404, response.status)
+    fun testGetObservations_failNoSubjectId() = runBlocking {
+        target("project/project-1/subject//topic/topic-1/observations")
+            .request()
+            .get()
+            .use { response ->
+                assertEquals(404, response.status)
+            }
     }
 
     @Test
-    fun testGetObservations_failNoTopicId() {
-        val response = target("project/project-1/subject/sub-1/topic//observations").request().get()
-        assertEquals(404, response.status)
+    fun testGetObservations_failNoTopicId() = runBlocking {
+        target("project/project-1/subject/sub-1/topic//observations")
+            .request()
+            .get()
+            .use { response ->
+                assertEquals(404, response.status)
+            }
     }
 
     @Test
-    fun testGetObservations_failNoProjectId() {
-        val response = target("project//subject/sub-1/topic/topic-1/observations").request().get()
-        assertEquals(404, response.status)
+    fun testGetObservations_failNoProjectId() = runBlocking {
+        target("project//subject/sub-1/topic/topic-1/observations")
+            .request()
+            .get()
+            .use { response ->
+                assertEquals(404, response.status)
+            }
     }
 
     private fun createObservation(): Observation {
