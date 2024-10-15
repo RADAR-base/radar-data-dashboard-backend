@@ -21,6 +21,7 @@ package org.radarbase.datadashboard.api.domain
 import jakarta.inject.Provider
 import jakarta.persistence.EntityManager
 import jakarta.ws.rs.core.Context
+import org.hibernate.exception.SQLGrammarException
 import org.radarbase.datadashboard.api.domain.model.Observation
 import org.radarbase.jersey.hibernate.HibernateRepository
 import org.radarbase.jersey.service.AsyncCoroutineService
@@ -31,22 +32,40 @@ class ObservationRepositoryImpl(
     @Context asyncService: AsyncCoroutineService,
 ) : HibernateRepository(em, asyncService), ObservationRepository {
 
+    private val tableExistsRegex = Regex("relation \".*\" does not exist")
+
     override suspend fun getObservations(projectId: String, subjectId: String, topicId: String): List<Observation> {
         logger.debug("Get observations in topic {} of subject {} in project {}", topicId, subjectId, projectId)
 
         return transact {
-            createQuery(
-                "SELECT o FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId ORDER BY o.observationTime DESC",
-                Observation::class.java,
-            ).apply {
-                setParameter("projectId", projectId)
-                setParameter("subjectId", subjectId)
-                setParameter("topicId", topicId)
-            }.resultList
+            try {
+                createQuery(
+                    "SELECT o FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId ORDER BY o.observationTime DESC",
+                    Observation::class.java,
+                ).apply {
+                    setParameter("projectId", projectId)
+                    setParameter("subjectId", subjectId)
+                    setParameter("topicId", topicId)
+                }.resultList
+            } catch (ex: SQLGrammarException) {
+                if (tableDoesNotExist(ex)) {
+                    logger.info(
+                        "Observations table has not been created by JDBC connector yet " +
+                            "(will be created upon first data ingestion). Returning empty result...",
+                    )
+                    emptyList()
+                } else {
+                    throw ex
+                }
+            }
         }
     }
 
     companion object {
         private val logger = LoggerFactory.getLogger(ObservationRepositoryImpl::class.java)
+    }
+
+    private fun tableDoesNotExist(ex: SQLGrammarException): Boolean {
+        return tableExistsRegex.containsMatchIn(ex.message ?: "")
     }
 }

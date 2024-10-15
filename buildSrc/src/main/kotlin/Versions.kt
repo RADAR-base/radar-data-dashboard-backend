@@ -18,7 +18,7 @@
 
 @Suppress("ConstPropertyName")
 object Versions {
-    const val project = "0.1.8"
+    const val project = "0.2.2"
 
     const val java = 17
 
