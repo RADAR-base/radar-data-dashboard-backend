@@ -24,11 +24,9 @@ object Versions {
 
     const val kotlin = "1.9.10"
 
-    const val radarCommons = "1.1.2"
+    const val radarCommons = "1.1.3"
     const val radarJersey = "0.11.1"
     const val postgresql = "42.6.1"
-    const val ktor = "2.3.5"
-    const val jedis = "5.0.2"
 
     const val slf4j = "2.0.9"
     const val log4j2 = "2.21.0"
@@ -36,6 +34,4 @@ object Versions {
     const val jersey = "3.1.3"
     const val junit = "5.10.0"
     const val mockitoKotlin = "5.1.0"
-    const val hamcrest = "2.2"
-    const val ktlint = "1.3.1"
 }
