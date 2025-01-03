@@ -32,6 +32,7 @@ object Versions {
 
     const val slf4j = "2.0.9"
     const val log4j2 = "2.21.0"
+    const val sentryOpenTelemetry = "7.19.1"
 
     const val jersey = "3.1.3"
     const val junit = "5.10.0"

@@ -18,6 +18,9 @@
 
 package org.radarbase.datadashboard.api
 
+import io.sentry.Instrumenter
+import io.sentry.Sentry
+import io.sentry.opentelemetry.OpenTelemetryLinkErrorEventProcessor
 import org.radarbase.datadashboard.api.config.DashboardApiConfig
 import org.radarbase.jersey.GrizzlyServer
 import org.radarbase.jersey.config.ConfigLoader
@@ -33,6 +36,16 @@ object DashboardApi {
 
     private val logger: Logger = LoggerFactory.getLogger(DashboardApi.javaClass)
 
+    private fun setupSentryWithOpenTelemetry(sentryDsn: String) {
+        // Initialize Sentry with DSN and tracesSampleRate
+        Sentry.init { options ->
+            options.dsn = sentryDsn
+            options.tracesSampleRate = 1.0
+            options.instrumenter = Instrumenter.OTEL
+            options.addEventProcessor(OpenTelemetryLinkErrorEventProcessor())
+        }
+    }
+
     @JvmStatic
     fun main(args: Array<String>) {
         if (args.firstOrNull() in arrayOf("--help", "-h")) {
@@ -43,6 +56,13 @@ object DashboardApi {
         val configFile = args.firstOrNull() ?: "dashboard.yml"
         val config: DashboardApiConfig = ConfigLoader.loadConfig(configFile, args)
         val resources = ConfigLoader.loadResources(config.service.resourceConfig, config.withEnv())
+
+        // Initialize Sentry with OpenTelemetry.
+        // To enable OpenTelemetry, auto-initialization of Sentry must be disabled and needs to be done manually.
+        if (!config.service.sentryDsn.isNullOrEmpty() && config.service.enableOpenTelemetry) {
+            logger.debug("Initializing Sentry with OpenTelemetry...")
+            setupSentryWithOpenTelemetry(config.service.sentryDsn)
+        }
 
         GrizzlyServer(config.service.baseUri, resources).run {
             listen()

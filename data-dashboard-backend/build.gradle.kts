@@ -21,6 +21,7 @@ dependencies {
         runtimeOnly("org.postgresql:postgresql:${Versions.postgresql}")
     }
     implementation("org.radarbase:radar-commons-kotlin:${Versions.radarCommons}")
+    implementation("io.sentry:sentry-opentelemetry-core:${Versions.sentryOpenTelemetry}")
 
     testImplementation("org.mockito:mockito-core:${Versions.mockitoKotlin}")
     testImplementation("org.mockito.kotlin:mockito-kotlin:${Versions.mockitoKotlin}")

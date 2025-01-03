@@ -31,6 +31,8 @@ data class DashboardServiceConfig(
     val enableCors: Boolean? = false,
     val tokenExpiryTimeInMinutes: Long = 15,
     val persistentTokenExpiryInMin: Long = 3.days.inWholeMinutes,
+    val sentryDsn: String? = null,
+    val enableOpenTelemetry: Boolean = false,
 ) {
     fun withEnv(): DashboardServiceConfig = copy(
         baseUri = URI.create(System.getenv("RADAR_DATA_DASHBOARD_BASE_URI") ?: baseUri.toString()),
@@ -39,5 +41,7 @@ data class DashboardServiceConfig(
         enableCors = System.getenv("RADAR_DATA_DASHBOARD_ENABLE_CORS")?.toBoolean() ?: enableCors,
         tokenExpiryTimeInMinutes = System.getenv("RADAR_DATA_DASHBOARD_TOKEN_EXPIRY_TIME_IN_MINUTES")?.toLong() ?: tokenExpiryTimeInMinutes,
         persistentTokenExpiryInMin = System.getenv("RADAR_DATA_DASHBOARD_PERSISTENT_TOKEN_EXPIRY_IN_MIN")?.toLong() ?: persistentTokenExpiryInMin,
+        sentryDsn = System.getenv("SENTRY_DSN") ?: sentryDsn.toString(),
+        enableOpenTelemetry = System.getenv("SENTRY_OPEN_TELEMETRY_ENABLED")?.toBoolean() ?: enableOpenTelemetry,
     )
 }
