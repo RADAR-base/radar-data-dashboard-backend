@@ -24,8 +24,8 @@ object Versions {
 
     const val kotlin = "1.9.10"
 
-    const val radarCommons = "1.1.2"
-    const val radarJersey = "0.11.1"
+    const val radarCommons = "1.2.4"
+    const val radarJersey = "0.12.4"
     const val postgresql = "42.6.1"
     const val ktor = "2.3.5"
     const val jedis = "5.0.2"
