@@ -1,12 +1,50 @@
+/*
+ *
+ *  *  Copyright 2025 The Hyve
+ *  *
+ *  *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  you may not use this file except in compliance with the License.
+ *  *  You may obtain a copy of the License at
+ *  *
+ *  *    http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  *  Unless required by applicable law or agreed to in writing, software
+ *  *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  *  See the License for the specific language governing permissions and
+ *  *  limitations under the License.
+ *
+ */
+
+import org.radarbase.gradle.plugin.radarKotlin
+import org.radarbase.gradle.plugin.radarPublishing
+
 plugins {
     application
     kotlin("plugin.serialization")
     kotlin("plugin.noarg")
     kotlin("plugin.jpa")
     kotlin("plugin.allopen")
-    // TODO Remove this when new release of radar-commons is available and used in this project.
-    // This version has Sentry support built in for radar-kotlin plugin.
-    id("io.sentry.jvm.gradle") version "4.11.0"
+    id("org.radarbase.radar-kotlin")
+    id("org.radarbase.radar-publishing")
+}
+
+radarPublishing {
+    githubUrl.set("https://github.com/RADAR-base/radar-data-dashboard-backend")
+    developers {
+        developer {
+            id.set("pvanierop")
+            name.set("Pim van Nierop")
+            email.set("pim@thehyve.nl")
+            organization.set("radar-base")
+        }
+    }
+}
+
+radarKotlin {
+    log4j2Version.set(Versions.log4j2)
+    sentryEnabled.set(true)
+    openTelemetryAgentEnabled.set(true)
 }
 
 application {
