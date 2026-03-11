@@ -16,18 +16,47 @@
  *
  */
 
+import org.radarbase.gradle.plugin.radarKotlin
+import org.radarbase.gradle.plugin.radarPublishing
 
 plugins {
-    id("org.radarbase.radar-root-project") version Versions.radarCommons
-    id("org.radarbase.radar-dependency-management") version Versions.radarCommons
-    id("org.radarbase.radar-kotlin") version Versions.radarCommons apply false
-    id("org.radarbase.radar-publishing") version Versions.radarCommons apply false
-    kotlin("plugin.serialization") version Versions.kotlin apply false
-    kotlin("plugin.noarg") version Versions.kotlin apply false
-    kotlin("plugin.jpa") version Versions.kotlin apply false
-    kotlin("plugin.allopen") version Versions.kotlin apply false
+    alias(libs.plugins.radarRootProject)
+    alias(libs.plugins.radarDependencyManagement)
+    alias(libs.plugins.radarKotlin) apply false
+    alias(libs.plugins.radarPublishing) apply false
+    alias(libs.plugins.kotlinSerialization) apply false
+    alias(libs.plugins.kotlinNoarg) apply false
+    alias(libs.plugins.kotlinJpa) apply false
+    alias(libs.plugins.kotlinAllopen) apply false
+    alias(libs.plugins.sentry) apply false
 }
 
 radarRootProject {
-    projectVersion.set(Versions.project)
+    projectVersion.set(libs.versions.project)
+    gradleVersion.set(libs.versions.gradle)
+}
+
+subprojects {
+    apply(plugin = "org.radarbase.radar-kotlin")
+    apply(plugin = "org.radarbase.radar-publishing")
+
+    radarKotlin {
+        javaVersion.set(rootProject.libs.versions.java.get().toInt())
+        kotlinVersion.set(rootProject.libs.versions.kotlin)
+        slf4jVersion.set(rootProject.libs.versions.slf4j)
+        log4j2Version.set(rootProject.libs.versions.log4j2)
+        sentryEnabled.set(true)
+    }
+
+    radarPublishing {
+        githubUrl.set("https://github.com/RADAR-base/radar-data-dashboard-backend")
+        developers {
+            developer {
+                id.set("pvanierop")
+                name.set("Pim van Nierop")
+                email.set("pim@thehyve.nl")
+                organization.set("radar-base")
+            }
+        }
+    }
 }
