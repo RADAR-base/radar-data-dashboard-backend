@@ -28,7 +28,6 @@ plugins {
     alias(libs.plugins.kotlinNoarg) apply false
     alias(libs.plugins.kotlinJpa) apply false
     alias(libs.plugins.kotlinAllopen) apply false
-    alias(libs.plugins.sentry) apply false
 }
 
 radarRootProject {
