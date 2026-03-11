@@ -1,6 +1,6 @@
 [versions]
 project = "0.2.3"
-gradle = "8.13"
+gradle = "8.14"
 java = "17"
 kotlin = "1.9.10"
 radarCommons = "1.2.4"
