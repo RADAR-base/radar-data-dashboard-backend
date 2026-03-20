@@ -40,11 +40,9 @@ subprojects {
     apply(plugin = "org.radarbase.radar-publishing")
 
     radarKotlin {
-        javaVersion.set(rootProject.libs.versions.java.get().toInt())
-        kotlinVersion.set(rootProject.libs.versions.kotlin)
-        slf4jVersion.set(rootProject.libs.versions.slf4j)
         log4j2Version.set(rootProject.libs.versions.log4j2)
         sentryEnabled.set(true)
+        openTelemetryAgentEnabled.set(false)
     }
 
     radarPublishing {
