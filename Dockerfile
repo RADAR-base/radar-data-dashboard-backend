@@ -20,7 +20,6 @@ ENV GRADLE_USER_HOME=/code/.gradlecache \
 
 COPY ./gradle/libs.versions.toml /code/gradle/
 COPY ./build.gradle.kts ./settings.gradle.kts ./gradle.properties /code/
-COPY ./buildSrc /code/buildSrc
 COPY data-dashboard-backend/build.gradle.kts  /code/data-dashboard-backend/
 RUN gradle downloadDependencies copyDependencies startScripts
 
