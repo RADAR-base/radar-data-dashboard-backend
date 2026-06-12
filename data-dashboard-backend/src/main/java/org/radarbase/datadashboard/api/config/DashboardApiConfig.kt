@@ -27,10 +27,12 @@ data class DashboardApiConfig(
         jwtResourceName = "res_DataDashboardAPI",
     ),
     val database: DatabaseConfig = DatabaseConfig(),
+    val hazelcast: HazelcastConfig = HazelcastConfig(),
 ) {
     fun withEnv(): DashboardApiConfig = copy(
         service = service.withEnv(),
         auth = auth.withEnv(),
         database = database.withEnv(),
+        hazelcast = hazelcast.withEnv(),
     )
 }
