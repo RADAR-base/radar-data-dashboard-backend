@@ -75,7 +75,15 @@ class ObservationResourceTest : JerseyTest() {
     @Test
     fun testGetObservations() = runBlocking {
         // Instruct the mock to return the fake observations when called.
-        `when`(observationService.getObservations(projectId = projectId, subjectId = subjectId, topicId = topicId)).thenReturn(observationListDto)
+        `when`(
+            observationService.getObservations(
+                projectId = projectId,
+                subjectId = subjectId,
+                topicId = topicId,
+                since = null,
+                until = null
+            )
+        ).thenReturn(observationListDto)
         // Make the call to the REST endpoint.
         target("project/project-1/subject/sub-1/topic/topic-1/observations")
             .request()

@@ -59,10 +59,16 @@ class ObservationServiceImplTest {
         val observations: List<Observation> = listOf(createObservation(), createObservation(), createObservation(), createObservation())
 
         // Mock the repository to return the fake observations.
-        `when`(observationRepository.getObservations(projectId = projectId, subjectId = subjectId, topicId = topicId)).thenReturn(observations)
+        `when`(
+            observationRepository.getObservations(
+                projectId = projectId, subjectId = subjectId, topicId = topicId, since = null, until = null
+            )
+        ).thenReturn(observations)
 
         // Call the ObservationService (class under test) to get the observations.
-        val result = observationService.getObservations(projectId = projectId, subjectId = subjectId, topicId = topicId)
+        val result = observationService.getObservations(
+            projectId = projectId, subjectId = subjectId, topicId = topicId, since = null, until = null
+        )
 
         // Check if the result is as expected (observations transformed to ObservationListDto).
         val expectedDto = ObservationListDto(
