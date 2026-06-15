@@ -19,7 +19,46 @@
 package org.radarbase.datadashboard.api.domain
 
 import org.radarbase.datadashboard.api.domain.model.Observation
+import java.time.Instant
 
 interface ObservationRepository {
-    suspend fun getObservations(projectId: String, subjectId: String, topicId: String): List<Observation>
+    suspend fun getObservations(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        since: Instant?,
+        until: Instant?,
+    ): List<Observation>
+
+    suspend fun getObservations(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String,
+        variable: String,
+        since: Instant?,
+        until: Instant?,
+    ): List<Observation>
+
+    suspend fun getVariableType(topicId: String, category: String, variable: String): String?
+
+    suspend fun getNumericValues(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String,
+        variable: String,
+        since: Instant?,
+        until: Instant?,
+    ): List<Double>
+
+    suspend fun getTextValues(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String,
+        variable: String,
+        since: Instant?,
+        until: Instant?,
+    ): List<String>
 }

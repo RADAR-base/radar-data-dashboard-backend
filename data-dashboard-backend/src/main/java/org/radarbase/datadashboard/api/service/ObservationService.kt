@@ -19,7 +19,34 @@
 package org.radarbase.datadashboard.api.service
 
 import org.radarbase.datadashboard.api.api.ObservationListDto
+import java.time.Instant
 
 interface ObservationService {
-    suspend fun getObservations(projectId: String, subjectId: String, topicId: String): ObservationListDto
+    suspend fun getObservations(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        since: Instant?,
+        until: Instant?,
+    ): ObservationListDto
+
+    suspend fun getObservations(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String,
+        variable: String,
+        since: Instant?,
+        until: Instant?,
+    ): ObservationListDto
+
+    fun getMaxByCategoryAndVariable(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String,
+        variable: String,
+        since: Instant?,
+        until: Instant?,
+    ): Double?
 }

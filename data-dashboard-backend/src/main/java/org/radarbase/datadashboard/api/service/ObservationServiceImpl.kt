@@ -22,14 +22,64 @@ import jakarta.ws.rs.core.Context
 import org.radarbase.datadashboard.api.api.ObservationListDto
 import org.radarbase.datadashboard.api.domain.ObservationRepository
 import org.radarbase.datadashboard.api.domain.mapper.toDto
+import java.time.Instant
 
 class ObservationServiceImpl(
-    @Context private val observationRepository: ObservationRepository,
+    @field:Context private val observationRepository: ObservationRepository,
 ) : ObservationService {
-    override suspend fun getObservations(projectId: String, subjectId: String, topicId: String): ObservationListDto {
-        val result = this.observationRepository.getObservations(projectId = projectId, topicId = topicId, subjectId = subjectId)
+    override suspend fun getObservations(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        since: Instant?,
+        until: Instant?,
+    ): ObservationListDto {
+        val result =
+            this.observationRepository.getObservations(
+                projectId = projectId,
+                subjectId = subjectId,
+                topicId = topicId,
+                since = since,
+                until = until
+            )
         return ObservationListDto(
             result.map { it.toDto() },
         )
+    }
+
+    override suspend fun getObservations(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String,
+        variable: String,
+        since: Instant?,
+        until: Instant?,
+    ): ObservationListDto {
+        val result =
+            this.observationRepository.getObservations(
+                projectId = projectId,
+                topicId = topicId,
+                subjectId = subjectId,
+                category = category,
+                variable = variable,
+                since = since,
+                until = until,
+            )
+        return ObservationListDto(
+            result.map { it.toDto() },
+        )
+    }
+
+    override fun getMaxByCategoryAndVariable(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String,
+        variable: String,
+        since: Instant?,
+        until: Instant?,
+    ): Double? {
+        TODO("Not yet implemented")
     }
 }

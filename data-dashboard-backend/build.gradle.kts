@@ -25,6 +25,7 @@ dependencies {
 
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.mockito.params)
     testImplementation(libs.jersey.testFramework.core)
     testImplementation(libs.jersey.testFramework.provider.grizzly2)
     testImplementation(libs.h2)

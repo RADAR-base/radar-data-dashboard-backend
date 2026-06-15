@@ -26,6 +26,8 @@ import org.radarbase.datadashboard.api.domain.model.Observation
 import org.radarbase.jersey.hibernate.HibernateRepository
 import org.radarbase.jersey.service.AsyncCoroutineService
 import org.slf4j.LoggerFactory
+import java.time.Instant
+import kotlin.jvm.java
 
 class ObservationRepositoryImpl(
     @Context em: Provider<EntityManager>,
@@ -34,24 +36,164 @@ class ObservationRepositoryImpl(
 
     private val tableExistsRegex = Regex("relation \".*\" does not exist")
 
-    override suspend fun getObservations(projectId: String, subjectId: String, topicId: String): List<Observation> {
+    override suspend fun getObservations(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        since: Instant?,
+        until: Instant?,
+    ): List<Observation> {
+        val query = buildString {
+            append("SELECT o FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId")
+            if (since != null) append(" AND o.observationTime > :since")
+            if (until != null) append(" AND o.observationTime <= :until")
+            append(" ORDER BY o.observationTime DESC")
+        }
+        val params = buildList<Pair<String, Any>> {
+            add(Pair("projectId", projectId))
+            add(Pair("subjectId", subjectId))
+            add(Pair("topicId", topicId))
+            if (since != null) add(Pair("since", since))
+            if (until != null) add(Pair("until", until))
+        }
         logger.debug("Get observations in topic {} of subject {} in project {}", topicId, subjectId, projectId)
+        return performQuery<Observation>(query, params)
+    }
 
+    override suspend fun getObservations(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String,
+        variable: String,
+        since: Instant?,
+        until: Instant?,
+    ): List<Observation> {
+        val query = buildString {
+            append("SELECT o FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.category = :category AND o.variable = :variable")
+            if (since != null) append(" AND o.observationTime > :since")
+            if (until != null) append(" AND o.observationTime <= :until")
+            append(" ORDER BY o.observationTime DESC")
+        }
+        val params = buildList<Pair<String, Any>> {
+            add(Pair("projectId", projectId))
+            add(Pair("subjectId", subjectId))
+            add(Pair("topicId", topicId))
+            add(Pair("category", category))
+            add(Pair("variable", variable))
+            if (since != null) add(Pair("since", since))
+            if (until != null) add(Pair("until", until))
+        }
+        logger.debug(
+            "Get observations in topic {} with category {} and variable {} of subject {} in project {}",
+            topicId,
+            category,
+            variable,
+            subjectId,
+            projectId
+        )
+        return performQuery<Observation>(query, params)
+    }
+
+    override suspend fun getVariableType(
+        topicId: String,
+        category: String,
+        variable: String,
+    ): String? {
+        val query = "SELECT o FROM Observation o WHERE o.topic = :topicId AND o.category = :category AND o.variable = :variable LIMIT 1"
+        val params = buildList<Pair<String, Any>> {
+            add(Pair("topicId", topicId))
+            add(Pair("category", category))
+            add(Pair("variable", variable))
+        }
+        logger.debug("Get type for variable {} in category {} of topic {}", variable, category, topicId)
+        return performQuery<Observation>(query, params).firstOrNull()?.type
+    }
+
+    override suspend fun getNumericValues(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String,
+        variable: String,
+        since: Instant?,
+        until: Instant?,
+    ): List<Double> {
+        val query = buildString {
+            append("SELECT o.valueNumeric FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.category = :category AND o.variable = :variable")
+            if (since != null) append(" AND o.observationTime > :since")
+            if (until != null) append(" AND o.observationTime <= :until")
+        }
+        val params = buildList<Pair<String, Any>> {
+            add(Pair("projectId", projectId))
+            add(Pair("subjectId", subjectId))
+            add(Pair("topicId", topicId))
+            add(Pair("category", category))
+            add(Pair("variable", variable))
+            if (since != null) add(Pair("since", since))
+            if (until != null) add(Pair("until", until))
+        }
+        logger.debug(
+            "Get numeric values in topic {} with category {} and variable {} of subject {} in project {}",
+            topicId,
+            category,
+            variable,
+            subjectId,
+            projectId
+        )
+        return performQuery<Double>(query, params)
+    }
+
+    override suspend fun getTextValues(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String,
+        variable: String,
+        since: Instant?,
+        until: Instant?,
+    ): List<String> {
+        val query = buildString {
+            append("SELECT o.valueTextual FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.category = :category AND o.variable = :variable")
+            if (since != null) append(" AND o.observationTime > :since")
+            if (until != null) append(" AND o.observationTime <= :until")
+        }
+        val params = buildList<Pair<String, Any>> {
+            add(Pair("projectId", projectId))
+            add(Pair("subjectId", subjectId))
+            add(Pair("topicId", topicId))
+            add(Pair("category", category))
+            add(Pair("variable", variable))
+            if (since != null) add(Pair("since", since))
+            if (until != null) add(Pair("until", until))
+        }
+        logger.debug(
+            "Get numeric values in topic {} with category {} and variable {} of subject {} in project {}",
+            topicId,
+            category,
+            variable,
+            subjectId,
+            projectId
+        )
+        return performQuery<String>(query, params)
+    }
+
+    private suspend inline fun <reified T> performQuery(
+        query: String,
+        params: List<Pair<String, Any>>,
+    ): List<T> {
         return transact {
             try {
                 createQuery(
-                    "SELECT o FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId ORDER BY o.observationTime DESC",
-                    Observation::class.java,
+                    query,
+                    T::class.java,
                 ).apply {
-                    setParameter("projectId", projectId)
-                    setParameter("subjectId", subjectId)
-                    setParameter("topicId", topicId)
+                    params.forEach { this.setParameter(it.first, it.second) }
                 }.resultList
             } catch (ex: SQLGrammarException) {
                 if (tableDoesNotExist(ex)) {
                     logger.info(
-                        "Observations table has not been created by JDBC connector yet " +
-                            "(will be created upon first data ingestion). Returning empty result...",
+                        "Observations table has not been created by JDBC connector yet " + "(will be created upon first data ingestion). Returning empty result...",
                     )
                     emptyList()
                 } else {

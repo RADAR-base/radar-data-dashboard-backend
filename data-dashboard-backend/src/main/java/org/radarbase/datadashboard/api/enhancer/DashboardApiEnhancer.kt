@@ -25,6 +25,8 @@ import org.radarbase.datadashboard.api.domain.ObservationRepository
 import org.radarbase.datadashboard.api.domain.ObservationRepositoryImpl
 import org.radarbase.datadashboard.api.service.ObservationService
 import org.radarbase.datadashboard.api.service.ObservationServiceImpl
+import org.radarbase.datadashboard.api.service.ObservationTypeService
+import org.radarbase.datadashboard.api.service.ObservationTypeServiceImpl
 import org.radarbase.jersey.enhancer.JerseyResourceEnhancer
 import org.radarbase.jersey.filter.Filters
 
@@ -48,6 +50,10 @@ class DashboardApiEnhancer(
 
         bind(ObservationServiceImpl::class.java)
             .to(ObservationService::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(ObservationTypeServiceImpl::class.java)
+            .to(ObservationTypeService::class.java)
             .`in`(Singleton::class.java)
 
         bind(ObservationRepositoryImpl::class.java)
