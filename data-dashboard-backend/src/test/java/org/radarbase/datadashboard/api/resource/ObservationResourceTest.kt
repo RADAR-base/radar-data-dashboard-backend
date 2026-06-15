@@ -65,7 +65,8 @@ class ObservationResourceTest : JerseyTest() {
     @BeforeEach
     fun init() {
         // Create some fake observations that are returned by the service.
-        val observations: List<Observation> = listOf(createObservation(), createObservation(), createObservation(), createObservation())
+        val observations: List<Observation> =
+            listOf(createObservation(), createObservation(), createObservation(), createObservation())
         // Create Dto that should be returned by the ObservationService.
         observationListDto = ObservationListDto(
             observations.map { it.toDto() },

@@ -56,7 +56,8 @@ class ObservationServiceImplTest {
     fun test_getObservations1() = runBlocking {
         // Create some fake observations that are returned by the repository.
         // Each observation is linked to a Variable.
-        val observations: List<Observation> = listOf(createObservation(), createObservation(), createObservation(), createObservation())
+        val observations: List<Observation> =
+            listOf(createObservation(), createObservation(), createObservation(), createObservation())
 
         // Mock the repository to return the fake observations.
         `when`(
