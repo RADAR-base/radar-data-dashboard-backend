@@ -32,9 +32,9 @@ import org.mockito.MockitoAnnotations
 import org.radarbase.datadashboard.api.api.ObservationListDto
 import org.radarbase.datadashboard.api.domain.mapper.toDto
 import org.radarbase.datadashboard.api.domain.model.Observation
+import org.radarbase.datadashboard.api.mock.MockAsyncCoroutineService
 import org.radarbase.datadashboard.api.service.ObservationService
 import org.radarbase.jersey.service.AsyncCoroutineService
-import org.radarbase.upload.mock.MockAsyncCoroutineService
 import java.time.ZonedDateTime
 
 class ObservationResourceTest : JerseyTest() {

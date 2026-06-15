@@ -1,4 +1,4 @@
-package org.radarbase.upload.mock
+package org.radarbase.datadashboard.api.mock
 
 import jakarta.ws.rs.container.AsyncResponse
 import kotlinx.coroutines.CancellableContinuation
