@@ -23,6 +23,7 @@ import org.glassfish.jersey.internal.inject.AbstractBinder
 import org.radarbase.datadashboard.api.config.DashboardApiConfig
 import org.radarbase.datadashboard.api.domain.ObservationRepository
 import org.radarbase.datadashboard.api.domain.ObservationRepositoryImpl
+import org.radarbase.datadashboard.api.resource.paramconverter.InstantParamConverterProvider
 import org.radarbase.datadashboard.api.service.ObservationService
 import org.radarbase.datadashboard.api.service.ObservationServiceImpl
 import org.radarbase.datadashboard.api.service.ObservationTypeService
@@ -38,6 +39,7 @@ class DashboardApiEnhancer(
             Filters.cache,
             Filters.logResponse,
             if (config.service.enableCors == true) Filters.cors else null,
+            InstantParamConverterProvider::class.java,
         ).toTypedArray()
 
     override val packages: Array<String> = arrayOf(

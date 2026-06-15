@@ -36,6 +36,7 @@ class DashBoardApiEnhancerFactory(
         add(Enhancers.managementPortal(config.auth))
         add(Enhancers.health)
         add(Enhancers.exception)
+        add(Enhancers.mapper)
         val hazelcastEnhancedProperties = if (config.hazelcast.enable) mapOf(
             "hibernate.cache.use_second_level_cache" to "true",
             "hibernate.cache.region.factory_class" to "com.hazelcast.hibernate.HazelcastLocalCacheRegionFactory",

@@ -13,6 +13,8 @@ h2 = "2.2.224"
 hazelcast = "5.4.0"
 hazelcastHibernate = "5.1.0"
 hazelcastKubernetes = "2.2.3"
+# Keep the same as in radar-jersey-hibernate
+liquibase = "4.33.0"
 
 [libraries]
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
@@ -29,6 +31,7 @@ mockito-params = { module = "org.junit.jupiter:junit-jupiter-params", version.re
 jersey-testFramework-core = { module = "org.glassfish.jersey.test-framework:jersey-test-framework-core", version.ref = "jersey" }
 jersey-testFramework-provider-grizzly2 = { module = "org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2", version.ref = "jersey" }
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
+liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase" }
 
 [plugins]
 radarRootProject = { id = "org.radarbase.radar-root-project", version.ref = "radarCommons" }

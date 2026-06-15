@@ -29,6 +29,7 @@ dependencies {
     testImplementation(libs.jersey.testFramework.core)
     testImplementation(libs.jersey.testFramework.provider.grizzly2)
     testImplementation(libs.h2)
+    testImplementation(libs.liquibase.core)
 }
 
 allOpen {

@@ -26,8 +26,8 @@ interface ObservationService {
         projectId: String,
         subjectId: String,
         topicId: String,
-        since: Instant?,
-        until: Instant?,
+        since: Instant? = null,
+        until: Instant? = null,
     ): ObservationListDto
 
     suspend fun getObservations(
@@ -36,8 +36,8 @@ interface ObservationService {
         topicId: String,
         category: String,
         variable: String,
-        since: Instant?,
-        until: Instant?,
+        since: Instant? = null,
+        until: Instant? = null,
     ): ObservationListDto
 
     fun getMaxByCategoryAndVariable(
@@ -46,7 +46,7 @@ interface ObservationService {
         topicId: String,
         category: String,
         variable: String,
-        since: Instant?,
-        until: Instant?,
+        since: Instant? = null,
+        until: Instant? = null,
     ): Double?
 }
