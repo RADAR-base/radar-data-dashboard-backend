@@ -22,13 +22,18 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.stub
 import org.radarbase.datadashboard.api.api.ObservationListDto
 import org.radarbase.datadashboard.api.domain.ObservationRepositoryImpl
 import org.radarbase.datadashboard.api.domain.mapper.toDto
 import org.radarbase.datadashboard.api.domain.model.Observation
-import java.time.ZonedDateTime
+import org.radarbase.datadashboard.api.util.TestUtil.Companion.ObservationType
+import org.radarbase.datadashboard.api.util.TestUtil.Companion.createObservation
+import org.radarbase.datadashboard.api.util.TestUtil.Companion.projectId
+import org.radarbase.datadashboard.api.util.TestUtil.Companion.subjectId
+import org.radarbase.datadashboard.api.util.TestUtil.Companion.topicId
 
 class ObservationServiceImplTest {
 
@@ -36,17 +41,31 @@ class ObservationServiceImplTest {
     @Mock
     private lateinit var observationRepository: ObservationRepositoryImpl
 
-    private var observationId: Long = 1
-    private val projectId = "project-1"
-    private val subjectId = "sub-1"
-    private val topicId = "topic-1"
-
+    var observations: List<Observation>
     private val observationService: ObservationServiceImpl
 
     init {
         // Initialize all Mockito mocks.
         MockitoAnnotations.openMocks(this)
         observationService = ObservationServiceImpl(observationRepository)
+        observations =
+            listOf(
+                createObservation(ObservationType.STRING),
+                createObservation(ObservationType.STRING),
+                createObservation(ObservationType.STRING),
+                createObservation(ObservationType.STRING),
+            )
+        observationRepository.stub {
+            onBlocking {
+                observationRepository.getObservations(
+                    projectId = projectId,
+                    subjectId = subjectId,
+                    topicId = topicId,
+                    since = null,
+                    until = null
+                )
+            }.doReturn(observations)
+        }
     }
 
     /** This test does not test much (only whether the service calls the repository).
@@ -54,18 +73,6 @@ class ObservationServiceImplTest {
      * */
     @Test
     fun test_getObservations1() = runBlocking {
-        // Create some fake observations that are returned by the repository.
-        // Each observation is linked to a Variable.
-        val observations: List<Observation> =
-            listOf(createObservation(), createObservation(), createObservation(), createObservation())
-
-        // Mock the repository to return the fake observations.
-        `when`(
-            observationRepository.getObservations(
-                projectId = projectId, subjectId = subjectId, topicId = topicId, since = null, until = null
-            )
-        ).thenReturn(observations)
-
         // Call the ObservationService (class under test) to get the observations.
         val result = observationService.getObservations(
             projectId = projectId, subjectId = subjectId, topicId = topicId, since = null, until = null
@@ -78,19 +85,4 @@ class ObservationServiceImplTest {
         assertEquals(expectedDto, result)
     }
 
-    private fun createObservation(): Observation {
-        return Observation(
-            project = "project-1",
-            subject = subjectId,
-            source = "source-1",
-            topic = "topic-1",
-            category = "category-1",
-            variable = "variable-1",
-            observationTime = ZonedDateTime.now(),
-            observationTimeEnd = null,
-            type = "STRING",
-            valueTextual = "value1",
-            valueNumeric = null,
-        )
-    }
 }
