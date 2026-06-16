@@ -35,7 +35,7 @@ import org.mockito.kotlin.stub
 import org.radarbase.datadashboard.api.api.ObservationListDto
 import org.radarbase.datadashboard.api.domain.mapper.toDto
 import org.radarbase.datadashboard.api.domain.model.Observation
-import org.radarbase.datadashboard.api.mock.MockAsyncCoroutineService
+import org.radarbase.datadashboard.api.util.MockAsyncCoroutineService
 import org.radarbase.datadashboard.api.resource.paramconverter.InstantParamConverterProvider
 import org.radarbase.datadashboard.api.service.ObservationService
 import org.radarbase.datadashboard.api.service.ObservationTypeService

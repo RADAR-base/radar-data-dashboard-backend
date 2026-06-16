@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.radarbase.datadashboard.api.mock.MockAsyncCoroutineService
+import org.radarbase.datadashboard.api.util.MockAsyncCoroutineService
 
 class ObservationRepositoryImplTest : RepositoryTest() {
     private lateinit var repository: ObservationRepositoryImpl
