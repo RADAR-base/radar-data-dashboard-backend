@@ -24,7 +24,7 @@ import java.util.Locale.getDefault
 
 
 class ObservationTypeServiceImpl(
-    @field:Context private val observationRepository: ObservationRepository,
+    @Context private val observationRepository: ObservationRepository,
 ) : ObservationTypeService {
 
     val typeCache = mutableMapOf<String, String?>()

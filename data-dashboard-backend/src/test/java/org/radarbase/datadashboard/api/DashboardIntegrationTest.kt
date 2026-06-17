@@ -18,7 +18,6 @@
 
 package org.radarbase.datadashboard.api
 
-import jakarta.ws.rs.core.HttpHeaders
 import org.glassfish.hk2.utilities.binding.AbstractBinder
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.servlet.ServletContainer
@@ -28,7 +27,6 @@ import org.glassfish.jersey.test.ServletDeploymentContext
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory
 import org.glassfish.jersey.test.spi.TestContainerFactory
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.radarbase.auth.authorization.AuthorizationOracle
 import org.radarbase.datadashboard.api.config.DashboardApiConfig
@@ -37,6 +35,7 @@ import org.radarbase.jersey.auth.AuthValidator
 import org.radarbase.jersey.auth.disabled.DisabledAuthValidator
 import org.radarbase.jersey.auth.disabled.DisabledAuthorizationOracle
 import org.radarbase.jersey.config.ConfigLoader
+import org.radarbase.jersey.service.ProjectService
 
 // These tests are not yet working because mocking/stubbing token validation is not yet working.
 class DashboardIntegrationTest : JerseyTest() {
@@ -51,6 +50,7 @@ class DashboardIntegrationTest : JerseyTest() {
             override fun configure() {
                 bind(disabledAuthorizationOracle).to(AuthorizationOracle::class.java).ranked(1)
                 bind(disabledAuthValidator).to(AuthValidator::class.java).ranked(1)
+                bind(ProjectServiceStub()).to(ProjectService::class.java).ranked(1)
             }
         })
         return resourceConfig
@@ -72,23 +72,10 @@ class DashboardIntegrationTest : JerseyTest() {
         Assertions.assertEquals(200, response.status)
     }
 
-    @Disabled("Token integration tests do not work yet.")
     @Test
-    fun testGetObservationsNoToken() {
+    fun testGetObservations() {
         target("project/project-1/subject/sub-1/topic/phone_battery_level/observations")
             .request()
-            .get()
-            .use { response ->
-                Assertions.assertEquals(401, response.status)
-            }
-    }
-
-    @Disabled("Token integration tests do not work yet.")
-    @Test
-    fun testGetObservationsWithToken() {
-        target("project/project-1/subject/sub-1/topic/phone_battery_level/observations")
-            .request()
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + "... encoded token ...")
             .get()
             .use { response ->
                 Assertions.assertEquals(200, response.status)

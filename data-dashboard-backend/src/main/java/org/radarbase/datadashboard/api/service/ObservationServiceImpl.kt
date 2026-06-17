@@ -25,7 +25,7 @@ import org.radarbase.datadashboard.api.domain.mapper.toDto
 import java.time.Instant
 
 class ObservationServiceImpl(
-    @field:Context private val observationRepository: ObservationRepository,
+    @Context private val observationRepository: ObservationRepository,
 ) : ObservationService {
     override suspend fun getObservations(
         projectId: String,
