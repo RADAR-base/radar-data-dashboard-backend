@@ -19,5 +19,5 @@
 package org.radarbase.datadashboard.api.service
 
 interface ObservationTypeService {
-    suspend fun isNumeric(topic: String, category: String, variable: String): Boolean?
+    suspend fun isNumeric(topic: String, category: String? = null, variable: String): Boolean?
 }

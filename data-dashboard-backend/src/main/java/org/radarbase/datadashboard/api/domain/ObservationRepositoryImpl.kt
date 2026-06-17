@@ -28,7 +28,6 @@ import org.radarbase.jersey.service.AsyncCoroutineService
 import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.time.ZoneOffset
-import kotlin.jvm.java
 
 class ObservationRepositoryImpl(
     @Context em: Provider<EntityManager>,
@@ -65,13 +64,14 @@ class ObservationRepositoryImpl(
         projectId: String,
         subjectId: String,
         topicId: String,
-        category: String,
+        category: String?,
         variable: String,
         since: Instant?,
         until: Instant?,
     ): List<Observation> {
         val query = buildString {
-            append("SELECT o FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.category = :category AND o.variable = :variable")
+            append("SELECT o FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND  o.variable = :variable")
+            if (category != null) append(" AND o.category = :category")
             if (since != null) append(" AND o.observationTime > :since")
             if (until != null) append(" AND o.observationTime <= :until")
             append(" ORDER BY o.observationTime DESC")
@@ -80,7 +80,7 @@ class ObservationRepositoryImpl(
             add(Pair("projectId", projectId))
             add(Pair("subjectId", subjectId))
             add(Pair("topicId", topicId))
-            add(Pair("category", category))
+            if (category != null) add(Pair("category", category))
             add(Pair("variable", variable))
             if (since != null) add(Pair("since", since.atZone(ZoneOffset.UTC)))
             if (until != null) add(Pair("until", until.atZone(ZoneOffset.UTC)))
@@ -98,30 +98,41 @@ class ObservationRepositoryImpl(
 
     override suspend fun getVariableType(
         topicId: String,
-        category: String,
+        category: String?,
         variable: String,
     ): String? {
-        val query = "SELECT o FROM Observation o WHERE o.topic = :topicId AND o.category = :category AND o.variable = :variable LIMIT 1"
+        val query = buildString {
+            append("SELECT o FROM Observation o WHERE o.topic = :topicId AND o.variable = :variable")
+            if (category != null) append(" AND o.category = :category")
+            append(" LIMIT 1")
+        }
         val params = buildList<Pair<String, Any>> {
             add(Pair("topicId", topicId))
-            add(Pair("category", category))
             add(Pair("variable", variable))
+            if (category != null) add(Pair("category", category))
         }
         logger.debug("Get type for variable {} in category {} of topic {}", variable, category, topicId)
-        return performQuery<Observation>(query, params).firstOrNull()?.type
+        val observation = performQuery<Observation>(query, params).firstOrNull()
+        observation?.category.let {
+            if (category == null) {
+                throw IllegalStateException("Category was null in request, but observation had category. A category must be supplied for this variable.")
+            }
+        }
+        return observation?.type
     }
 
     override suspend fun getNumericValues(
         projectId: String,
         subjectId: String,
         topicId: String,
-        category: String,
+        category: String?,
         variable: String,
         since: Instant?,
         until: Instant?,
     ): List<Double> {
         val query = buildString {
-            append("SELECT o.valueNumeric FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.category = :category AND o.variable = :variable")
+            append("SELECT o.valueNumeric FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.variable = :variable")
+            if (category != null) append(" AND o.category = :category")
             if (since != null) append(" AND o.observationTime > :since")
             if (until != null) append(" AND o.observationTime <= :until")
         }
@@ -129,7 +140,7 @@ class ObservationRepositoryImpl(
             add(Pair("projectId", projectId))
             add(Pair("subjectId", subjectId))
             add(Pair("topicId", topicId))
-            add(Pair("category", category))
+            if (category != null) add(Pair("category", category))
             add(Pair("variable", variable))
             if (since != null) add(Pair("since", since.atZone(ZoneOffset.UTC)))
             if (until != null) add(Pair("until", until.atZone(ZoneOffset.UTC)))
@@ -149,13 +160,14 @@ class ObservationRepositoryImpl(
         projectId: String,
         subjectId: String,
         topicId: String,
-        category: String,
+        category: String?,
         variable: String,
         since: Instant?,
         until: Instant?,
     ): List<String> {
         val query = buildString {
-            append("SELECT o.valueTextual FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.category = :category AND o.variable = :variable")
+            append("SELECT o.valueTextual FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.variable = :variable")
+            if (category != null) append(" AND o.category = :category")
             if (since != null) append(" AND o.observationTime > :since")
             if (until != null) append(" AND o.observationTime <= :until")
         }
@@ -163,7 +175,7 @@ class ObservationRepositoryImpl(
             add(Pair("projectId", projectId))
             add(Pair("subjectId", subjectId))
             add(Pair("topicId", topicId))
-            add(Pair("category", category))
+            if (category != null) add(Pair("category", category))
             add(Pair("variable", variable))
             if (since != null) add(Pair("since", since.atZone(ZoneOffset.UTC)))
             if (until != null) add(Pair("until", until.atZone(ZoneOffset.UTC)))

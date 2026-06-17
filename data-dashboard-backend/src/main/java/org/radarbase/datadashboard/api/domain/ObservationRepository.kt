@@ -26,39 +26,39 @@ interface ObservationRepository {
         projectId: String,
         subjectId: String,
         topicId: String,
-        since: Instant?,
-        until: Instant?,
+        since: Instant? = null,
+        until: Instant? = null,
     ): List<Observation>
 
     suspend fun getObservations(
         projectId: String,
         subjectId: String,
         topicId: String,
-        category: String,
+        category: String? = null,
         variable: String,
-        since: Instant?,
-        until: Instant?,
+        since: Instant? = null,
+        until: Instant? = null,
     ): List<Observation>
 
-    suspend fun getVariableType(topicId: String, category: String, variable: String): String?
+    suspend fun getVariableType(topicId: String, category: String? = null, variable: String): String?
 
     suspend fun getNumericValues(
         projectId: String,
         subjectId: String,
         topicId: String,
-        category: String,
+        category: String? = null,
         variable: String,
-        since: Instant?,
-        until: Instant?,
+        since: Instant? = null,
+        until: Instant? = null,
     ): List<Double>
 
     suspend fun getTextValues(
         projectId: String,
         subjectId: String,
         topicId: String,
-        category: String,
+        category: String? = null,
         variable: String,
-        since: Instant?,
+        since: Instant? = null,
         until: Instant?,
     ): List<String>
 }

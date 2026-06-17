@@ -30,7 +30,7 @@ class ObservationTypeServiceImpl(
     val typeCache = mutableMapOf<String, String?>()
     val isNumericCache = mutableMapOf<String, Boolean?>()
 
-    val supplier: suspend (String, String, String) -> String? = { topic: String, category: String, variable: String ->
+    val supplier: suspend (String, String?, String) -> String? = { topic: String, category: String?, variable: String ->
         observationRepository.getVariableType(topic, category, variable)
     }
 
@@ -43,8 +43,8 @@ class ObservationTypeServiceImpl(
      * @return false when the variable type is not numeric
      * @return true when the variable type is numeric
      */
-    override suspend fun isNumeric(topic: String, category: String, variable: String): Boolean? {
-        val cacheKey = "${topic}:${category}:${variable}"
+    override suspend fun isNumeric(topic: String, category: String?, variable: String): Boolean? {
+        val cacheKey = "${topic}:${category ?: "null"}:${variable}"
         return isNumericCache.getOrPut(cacheKey) {
             typeCache.getOrPut(cacheKey) {
                 supplier(topic, category, variable)
