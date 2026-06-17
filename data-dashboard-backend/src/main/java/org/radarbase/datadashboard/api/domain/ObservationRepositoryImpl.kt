@@ -93,7 +93,10 @@ class ObservationRepositoryImpl(
             subjectId,
             projectId
         )
-        return performQuery<Observation>(query, params)
+        val observations = performQuery<Observation>(query, params,)
+        if (category == null && observations.any { it.category != null })
+            throw IllegalStateException("Category was null in request, but observation had category. A category must be supplied for this variable.")
+        return observations
     }
 
     override suspend fun getVariableType(
@@ -104,7 +107,6 @@ class ObservationRepositoryImpl(
         val query = buildString {
             append("SELECT o FROM Observation o WHERE o.topic = :topicId AND o.variable = :variable")
             if (category != null) append(" AND o.category = :category")
-            append(" LIMIT 1")
         }
         val params = buildList<Pair<String, Any>> {
             add(Pair("topicId", topicId))
@@ -112,7 +114,7 @@ class ObservationRepositoryImpl(
             if (category != null) add(Pair("category", category))
         }
         logger.debug("Get type for variable {} in category {} of topic {}", variable, category, topicId)
-        val observation = performQuery<Observation>(query, params).firstOrNull()
+        val observation = performQuery<Observation>(query, params, limit = 1).firstOrNull()
         observation?.category.let {
             if (category == null) {
                 throw IllegalStateException("Category was null in request, but observation had category. A category must be supplied for this variable.")
@@ -194,6 +196,7 @@ class ObservationRepositoryImpl(
     private suspend inline fun <reified T> performQuery(
         query: String,
         params: List<Pair<String, Any>>,
+        limit: Int? = null,
     ): List<T> {
         return transact {
             try {
@@ -202,6 +205,9 @@ class ObservationRepositoryImpl(
                     T::class.java,
                 ).apply {
                     params.forEach { this.setParameter(it.first, it.second) }
+                    limit?.let {
+                        setMaxResults(it)
+                    }
                 }.resultList
             } catch (ex: SQLGrammarException) {
                 if (tableDoesNotExist(ex)) {

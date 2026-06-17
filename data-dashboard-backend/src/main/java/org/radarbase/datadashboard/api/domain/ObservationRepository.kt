@@ -59,6 +59,6 @@ interface ObservationRepository {
         category: String? = null,
         variable: String,
         since: Instant? = null,
-        until: Instant?,
+        until: Instant? = null,
     ): List<String>
 }
