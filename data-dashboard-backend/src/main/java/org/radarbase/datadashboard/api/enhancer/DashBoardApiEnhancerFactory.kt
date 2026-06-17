@@ -41,10 +41,10 @@ class DashBoardApiEnhancerFactory(
             "hibernate.cache.use_second_level_cache" to "true",
             "hibernate.cache.region.factory_class" to "com.hazelcast.hibernate.HazelcastLocalCacheRegionFactory",
             "hibernate.cache.hazelcast.instance_name" to config.hazelcast.instanceName,
-        ) else emptyMap<String, String>() + config.database.properties
+        ) else emptyMap()
         val databaseConfig = config.database.copy(
             managedClasses = listOf(Observation::class.jvmName),
-            properties = hazelcastEnhancedProperties
+            properties = hazelcastEnhancedProperties + config.database.properties
         )
         add(HibernateResourceEnhancer(databaseConfig))
         add(HibernatePersistenceResourceEnhancer(config.hazelcast))
