@@ -27,6 +27,7 @@ import org.radarbase.jersey.hibernate.HibernateRepository
 import org.radarbase.jersey.service.AsyncCoroutineService
 import org.slf4j.LoggerFactory
 import java.time.Instant
+import java.time.ZoneOffset
 import kotlin.jvm.java
 
 class ObservationRepositoryImpl(
@@ -53,8 +54,8 @@ class ObservationRepositoryImpl(
             add(Pair("projectId", projectId))
             add(Pair("subjectId", subjectId))
             add(Pair("topicId", topicId))
-            if (since != null) add(Pair("since", since))
-            if (until != null) add(Pair("until", until))
+            if (since != null) add(Pair("since", since.atZone(ZoneOffset.UTC)))
+            if (until != null) add(Pair("until", until.atZone(ZoneOffset.UTC)))
         }
         logger.debug("Get observations in topic {} of subject {} in project {}", topicId, subjectId, projectId)
         return performQuery<Observation>(query, params)
@@ -81,8 +82,8 @@ class ObservationRepositoryImpl(
             add(Pair("topicId", topicId))
             add(Pair("category", category))
             add(Pair("variable", variable))
-            if (since != null) add(Pair("since", since))
-            if (until != null) add(Pair("until", until))
+            if (since != null) add(Pair("since", since.atZone(ZoneOffset.UTC)))
+            if (until != null) add(Pair("until", until.atZone(ZoneOffset.UTC)))
         }
         logger.debug(
             "Get observations in topic {} with category {} and variable {} of subject {} in project {}",
@@ -130,8 +131,8 @@ class ObservationRepositoryImpl(
             add(Pair("topicId", topicId))
             add(Pair("category", category))
             add(Pair("variable", variable))
-            if (since != null) add(Pair("since", since))
-            if (until != null) add(Pair("until", until))
+            if (since != null) add(Pair("since", since.atZone(ZoneOffset.UTC)))
+            if (until != null) add(Pair("until", until.atZone(ZoneOffset.UTC)))
         }
         logger.debug(
             "Get numeric values in topic {} with category {} and variable {} of subject {} in project {}",
@@ -164,8 +165,8 @@ class ObservationRepositoryImpl(
             add(Pair("topicId", topicId))
             add(Pair("category", category))
             add(Pair("variable", variable))
-            if (since != null) add(Pair("since", since))
-            if (until != null) add(Pair("until", until))
+            if (since != null) add(Pair("since", since.atZone(ZoneOffset.UTC)))
+            if (until != null) add(Pair("until", until.atZone(ZoneOffset.UTC)))
         }
         logger.debug(
             "Get numeric values in topic {} with category {} and variable {} of subject {} in project {}",

@@ -25,6 +25,8 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.radarbase.datadashboard.api.util.MockAsyncCoroutineService
+import java.sql.Time
+import java.time.Instant
 
 class ObservationRepositoryImplTest : RepositoryTest() {
     private lateinit var repository: ObservationRepositoryImpl
@@ -50,6 +52,36 @@ class ObservationRepositoryImplTest : RepositoryTest() {
         val variables = observations.map { it.variable }.toSet()
         assertTrue(variables.contains("Perceived_Pain_Score"))
         assertTrue(variables.contains("Name_Of_Physician"))
+    }
+
+    @Test
+    fun testGetObservationsWithSince() = runBlocking {
+        val observations = repository.getObservations(
+            projectId = "project-1",
+            subjectId = "sub-1",
+            topicId = "questionnaire_answer",
+            since = Instant.parse("2021-01-20T12:00:00Z"),
+            until = null,
+        )
+
+        assertEquals(1, observations.size)
+        val variables = observations.map { it.variable }.toSet()
+        assertTrue(variables.contains("Name_Of_Physician"))
+    }
+
+    @Test
+    fun testGetObservationsWithUntil() = runBlocking {
+        val observations = repository.getObservations(
+            projectId = "project-1",
+            subjectId = "sub-1",
+            topicId = "questionnaire_answer",
+            since = null,
+            until = Instant.parse("2021-01-20T12:00:00Z"),
+        )
+
+        assertEquals(1, observations.size)
+        val variables = observations.map { it.variable }.toSet()
+        assertTrue(variables.contains("Perceived_Pain_Score"))
     }
 
     @Test
