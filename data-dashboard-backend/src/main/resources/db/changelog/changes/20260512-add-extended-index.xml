@@ -30,7 +30,7 @@
         <createIndex tableName="observation" indexName="idx_topic_category_variable_time">
             <column name="PROJECT"/>
             <column name="SUBJECT"/>
-            <column name="TOPIC"/>
+            <column name="TOPIC_NAME"/>
             <column name="CATEGORY"/>
             <column name="VARIABLE"/>
             <column name="OBSERVATION_TIME"/>

@@ -22,11 +22,13 @@ import jakarta.persistence.EntityManager
 import jakarta.persistence.EntityManagerFactory
 import liquibase.Liquibase
 import liquibase.database.DatabaseFactory
+import liquibase.database.jvm.JdbcConnection
 import liquibase.resource.ClassLoaderResourceAccessor
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import org.radarbase.datadashboard.api.domain.model.Observation
+import org.radarbase.datadashboard.api.util.TestHibernateNamingStrategy
 import java.sql.DriverManager
 import java.util.*
 
@@ -37,21 +39,22 @@ abstract class RepositoryTest {
 
     @BeforeAll
     fun setUp() {
-        val url = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"
+        val url =
+            "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DEFAULT_NULL_ORDERING=HIGH;INIT=create schema if not exists ${SCHEMA_NAME}"
         val user = "sa"
         val password = ""
 
         // Run Liquibase first
-        DriverManager.getConnection(url, user, password).use { connection ->
-            val database = DatabaseFactory.getInstance().getDatabase("h2")
+        DriverManager.getConnection(url, user, password).let {
+            val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(JdbcConnection(it))
             database.liquibaseSchemaName = null
-            database.defaultSchemaName = null
+            database.defaultSchemaName = SCHEMA_NAME
             val liquibase = Liquibase(
                 "db/changelog/changes/db.changelog-master.xml",
                 ClassLoaderResourceAccessor(),
                 database
             )
-            liquibase.update("")
+            liquibase.update(LIQUIBASE_CONTEXT)
         }
 
         val props = Properties()
@@ -59,17 +62,20 @@ abstract class RepositoryTest {
         props["jakarta.persistence.jdbc.user"] = user
         props["jakarta.persistence.jdbc.password"] = password
         props["jakarta.persistence.jdbc.driver"] = "org.h2.Driver"
-        props["hibernate.dialect"] = "org.hibernate.dialect.PostgreSQLDialect"
-        props["hibernate.physical_naming_strategy"] =
-            "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"
+        props["hibernate.dialect"] = "org.hibernate.dialect.H2Dialect"
         props["hibernate.show_sql"] = "true"
         props["hibernate.format_sql"] = "true"
         // Since we use Liquibase to create the schema, we don't want Hibernate to change it
         props["jakarta.persistence.schema-generation.database.action"] = "none"
+        props["hibernate.default_schema"] = SCHEMA_NAME
+        props["hibernate.globally_quoted_identifiers"] = "true"
 
         val configuration = org.hibernate.cfg.Configuration()
         configuration.addAnnotatedClass(Observation::class.java)
         configuration.addProperties(props)
+        configuration.setPhysicalNamingStrategy(
+            TestHibernateNamingStrategy()
+        )
 
         emf = configuration.buildSessionFactory()
         em = emf.createEntityManager()
@@ -79,5 +85,10 @@ abstract class RepositoryTest {
     fun tearDown() {
         if (this::em.isInitialized) em.close()
         if (this::emf.isInitialized) emf.close()
+    }
+
+    companion object {
+        const val SCHEMA_NAME = "OBSERVATIONS"
+        const val LIQUIBASE_CONTEXT = "dev"
     }
 }

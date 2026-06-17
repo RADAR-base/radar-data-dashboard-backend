@@ -36,7 +36,7 @@
             <column name="SOURCE" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="TOPIC" type="varchar(255)">
+            <column name="TOPIC_NAME" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="CATEGORY" type="varchar(255)"/>
@@ -55,7 +55,7 @@
         <createIndex tableName="observation" indexName="idx_observation_subject_in_topic">
             <column name="PROJECT"/>
             <column name="SUBJECT"/>
-            <column name="TOPIC"/>
+            <column name="TOPIC_NAME"/>
             <column name="CATEGORY"/>
             <column name="VARIABLE"/>
             <column name="OBSERVATION_TIME"/>

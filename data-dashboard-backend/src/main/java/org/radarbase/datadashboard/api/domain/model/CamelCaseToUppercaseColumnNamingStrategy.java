@@ -33,7 +33,17 @@ public class CamelCaseToUppercaseColumnNamingStrategy extends CamelCaseToUndersc
     }
 
     @Override
-    public Identifier toPhysicalColumnName(final Identifier name, final JdbcEnvironment context) {
+    public Identifier toPhysicalSchemaName(final Identifier name, final JdbcEnvironment context) {
+        return adjustName(super.toPhysicalColumnName(name, context));
+    }
+
+    @Override
+    public Identifier toPhysicalTableName(Identifier name, JdbcEnvironment context) {
+        return adjustName(super.toPhysicalTableName(name, context));
+    }
+
+    @Override
+    public Identifier toPhysicalColumnName(Identifier name, JdbcEnvironment context) {
         return adjustName(super.toPhysicalColumnName(name, context));
     }
 
