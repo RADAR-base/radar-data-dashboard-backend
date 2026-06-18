@@ -27,24 +27,25 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.kotlin.eq
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.stub
 import org.radarbase.datadashboard.api.api.ObservationListDto
 import org.radarbase.datadashboard.api.domain.mapper.toDto
 import org.radarbase.datadashboard.api.domain.model.Observation
-import org.radarbase.datadashboard.api.util.MockAsyncCoroutineService
 import org.radarbase.datadashboard.api.resource.paramconverter.InstantParamConverterProvider
 import org.radarbase.datadashboard.api.service.ObservationService
 import org.radarbase.datadashboard.api.service.ObservationTypeService
+import org.radarbase.datadashboard.api.util.MockAsyncCoroutineService
+import org.radarbase.datadashboard.api.util.TestUtil.Companion.ObservationType.STRING
+import org.radarbase.datadashboard.api.util.TestUtil.Companion.createObservation
 import org.radarbase.jersey.config.ConfigLoader
 import org.radarbase.jersey.enhancer.EnhancerFactory
 import org.radarbase.jersey.enhancer.Enhancers
 import org.radarbase.jersey.enhancer.JerseyResourceEnhancer
 import org.radarbase.jersey.service.AsyncCoroutineService
-import java.time.ZonedDateTime
 
 class ObservationResourceTest : JerseyTest() {
 
@@ -58,7 +59,6 @@ class ObservationResourceTest : JerseyTest() {
     private val projectId = "project-1"
     private val subjectId = "sub-1"
     private val topicId = "topic-1"
-    private val category = "category-1"
 
     class TestResourceEnhancer : JerseyResourceEnhancer {
         override val classes: Array<Class<*>>
@@ -104,8 +104,12 @@ class ObservationResourceTest : JerseyTest() {
     @BeforeEach
     fun init() {
         // Create some fake observations that are returned by the service.
-        val observations: List<Observation> =
-            listOf(createObservation(), createObservation(), createObservation(), createObservation())
+        val observations: List<Observation> = listOf(
+            createObservation(STRING),
+            createObservation(STRING),
+            createObservation(STRING),
+            createObservation(STRING),
+        )
         // Create Dto that should be returned by the ObservationService.
         observationListDto = ObservationListDto(
             observations.map { it.toDto() },
@@ -167,21 +171,5 @@ class ObservationResourceTest : JerseyTest() {
             .use { response ->
                 assertEquals(404, response.status)
             }
-    }
-
-    private fun createObservation(): Observation {
-        return Observation(
-            project = "project-1",
-            subject = subjectId,
-            source = "source-1",
-            topic = "topic-1",
-            category = "category-1",
-            variable = "variable-1",
-            observationTime = ZonedDateTime.now(),
-            observationTimeEnd = null,
-            type = "STRING",
-            valueTextual = "value1",
-            valueNumeric = null,
-        )
     }
 }
