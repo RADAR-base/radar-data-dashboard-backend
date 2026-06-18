@@ -153,17 +153,9 @@ class ObservationResource(
         @QueryParam("since") since: Instant?,
         @QueryParam("until") until: Instant?,
         @Suspended asyncResponse: AsyncResponse,
-    ) = calculateValue(
-        projectId,
-        subjectId,
-        topicId,
-        category,
-        variable,
-        since,
-        until,
-        asyncResponse,
-        Iterable<Double>::count
-    )
+    ) = asyncService.runAsCoroutine(asyncResponse) {
+        observationService.getObservations(projectId, subjectId, topicId, category, variable, since, until).observations.size
+    }
 
     @GET
     @Path("category/{category}/variable/{variable}/average")
