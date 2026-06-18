@@ -39,8 +39,12 @@ import org.radarbase.datadashboard.api.resource.paramconverter.InstantParamConve
 import org.radarbase.datadashboard.api.service.ObservationService
 import org.radarbase.datadashboard.api.service.ObservationTypeService
 import org.radarbase.datadashboard.api.util.MockAsyncCoroutineService
-import org.radarbase.datadashboard.api.util.TestUtil.Companion.ObservationType.STRING
+import org.radarbase.datadashboard.api.util.TestUtil.Companion.ObservationType.DOUBLE
+import org.radarbase.datadashboard.api.util.TestUtil.Companion.category
 import org.radarbase.datadashboard.api.util.TestUtil.Companion.createObservation
+import org.radarbase.datadashboard.api.util.TestUtil.Companion.projectId
+import org.radarbase.datadashboard.api.util.TestUtil.Companion.subjectId
+import org.radarbase.datadashboard.api.util.TestUtil.Companion.topicId
 import org.radarbase.jersey.config.ConfigLoader
 import org.radarbase.jersey.enhancer.EnhancerFactory
 import org.radarbase.jersey.enhancer.Enhancers
@@ -56,9 +60,6 @@ class ObservationResourceTest : JerseyTest() {
     lateinit var observationTypeService: ObservationTypeService
 
     private lateinit var observationListDto: ObservationListDto
-    private val projectId = "project-1"
-    private val subjectId = "sub-1"
-    private val topicId = "topic-1"
 
     class TestResourceEnhancer : JerseyResourceEnhancer {
         override val classes: Array<Class<*>>
@@ -105,10 +106,10 @@ class ObservationResourceTest : JerseyTest() {
     fun init() {
         // Create some fake observations that are returned by the service.
         val observations: List<Observation> = listOf(
-            createObservation(STRING),
-            createObservation(STRING),
-            createObservation(STRING),
-            createObservation(STRING),
+            createObservation(DOUBLE),
+            createObservation(DOUBLE),
+            createObservation(DOUBLE),
+            createObservation(DOUBLE),
         )
         // Create Dto that should be returned by the ObservationService.
         observationListDto = ObservationListDto(
@@ -118,6 +119,25 @@ class ObservationResourceTest : JerseyTest() {
             onBlocking {
                 // Instruct the mock to return the fake observations when called.
                 getObservations(projectId = projectId, subjectId = subjectId, topicId = topicId)
+            }.doReturn(observationListDto)
+            onBlocking {
+                // Instruct the mock to return the fake observations when called.
+                getObservations(
+                    projectId = projectId,
+                    subjectId = subjectId,
+                    topicId = topicId,
+                    category = category,
+                    variable = "numeric-variable"
+                )
+            }.doReturn(observationListDto)
+            onBlocking {
+                // Instruct the mock to return the fake observations when called.
+                getObservations(
+                    projectId = projectId,
+                    subjectId = subjectId,
+                    topicId = topicId,
+                    variable = "numeric-variable"
+                )
             }.doReturn(observationListDto)
         }
         observationTypeService.stub {
@@ -145,7 +165,7 @@ class ObservationResourceTest : JerseyTest() {
 
     @Test
     fun testGetObservations_failNoSubjectId() = runBlocking {
-        target("project/project-1/subject//topic/topic-1/observations")
+        target("project/$projectId/subject//topic/$topicId/observations")
             .request()
             .get()
             .use { response ->
@@ -155,7 +175,7 @@ class ObservationResourceTest : JerseyTest() {
 
     @Test
     fun testGetObservations_failNoTopicId() = runBlocking {
-        target("project/project-1/subject/sub-1/topic//observations")
+        target("project/$projectId/subject/$subjectId/topic//observations")
             .request()
             .get()
             .use { response ->
@@ -165,11 +185,38 @@ class ObservationResourceTest : JerseyTest() {
 
     @Test
     fun testGetObservations_failNoProjectId() = runBlocking {
-        target("project//subject/sub-1/topic/topic-1/observations")
+        target("project//subject/$subjectId/topic/$topicId/observations")
             .request()
             .get()
             .use { response ->
                 assertEquals(404, response.status)
             }
+    }
+
+    @Test
+    fun testGetObservationsWithCategoryAndVariable() = runBlocking {
+        // Make the call to the REST endpoint.
+        target("project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/observations")
+            .request()
+            .get()
+            .use { response ->
+                // Expect the http response to be OK and the same as the expected DTO.
+                assertEquals(200, response.status)
+                assertEquals(observationListDto, response.readEntity(ObservationListDto::class.java))
+            }
+    }
+
+    @Test
+    fun testGetObservationsWithVariable() = runBlocking {
+        // Make the call to the REST endpoint.
+        target("project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/observations")
+            .request()
+            .get()
+            .use { response ->
+                // Expect the http response to be OK and the same as the expected DTO.
+                assertEquals(200, response.status)
+                assertEquals(observationListDto, response.readEntity(ObservationListDto::class.java))
+            }
+
     }
 }

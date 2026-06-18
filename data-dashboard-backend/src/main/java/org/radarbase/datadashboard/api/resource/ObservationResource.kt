@@ -94,6 +94,28 @@ class ObservationResource(
     }
 
     @GET
+    @Path("variable/{variable}/observations")
+    @NeedsPermission(Permission.MEASUREMENT_READ, "projectId", "subjectId")
+    fun getObservationsByCategoryAndVariable(
+        @PathParam("projectId") projectId: String,
+        @PathParam("subjectId") subjectId: String,
+        @PathParam("topicId") topicId: String,
+        @PathParam("variable") variable: String,
+        @QueryParam("since") since: Instant?,
+        @QueryParam("until") until: Instant?,
+        @Suspended asyncResponse: AsyncResponse,
+    ) = asyncService.runAsCoroutine(asyncResponse) {
+        observationService.getObservations(
+            projectId = projectId,
+            subjectId = subjectId,
+            topicId = topicId,
+            variable = variable,
+            since = since,
+            until = until,
+        )
+    }
+
+    @GET
     @Path("category/{category}/variable/{variable}/max")
     @NeedsPermission(Permission.MEASUREMENT_READ, "projectId", "subjectId")
     fun getMaxByCategoryAndVariable(
