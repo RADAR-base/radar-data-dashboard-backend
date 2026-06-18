@@ -25,19 +25,17 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder
 import org.glassfish.jersey.test.JerseyTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.anyString
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.stub
 import org.radarbase.datadashboard.api.ObservationListDto
 import org.radarbase.datadashboard.domain.mapper.toDto
 import org.radarbase.datadashboard.domain.model.Observation
 import org.radarbase.datadashboard.resource.paramconverter.InstantParamConverterProvider
 import org.radarbase.datadashboard.service.ObservationService
-import org.radarbase.datadashboard.service.ObservationTypeService
 import org.radarbase.datadashboard.util.MockAsyncCoroutineService
 import org.radarbase.datadashboard.util.ObservationType
 import org.radarbase.datadashboard.util.TestUtil.Companion.category
@@ -56,9 +54,6 @@ class ObservationResourceTest : JerseyTest() {
     @Mock
     lateinit var observationService: ObservationService
 
-    @Mock
-    lateinit var observationTypeService: ObservationTypeService
-
     private lateinit var observationListDto: ObservationListDto
 
     class TestResourceEnhancer : JerseyResourceEnhancer {
@@ -69,7 +64,7 @@ class ObservationResourceTest : JerseyTest() {
             ).toTypedArray()
 
         override val packages: Array<String> = arrayOf(
-            "org.radarbase.datadashboard.api.resource",
+            "org.radarbase.datadashboard.resource",
         )
 
         override fun org.glassfish.jersey.internal.inject.AbstractBinder.enhance() {
@@ -96,7 +91,6 @@ class ObservationResourceTest : JerseyTest() {
         resourceConfig.register(object : AbstractBinder() {
             override fun configure() {
                 bind(observationService).to(ObservationService::class.java)
-                bind(observationTypeService).to(ObservationTypeService::class.java)
             }
         })
         return resourceConfig
@@ -140,20 +134,17 @@ class ObservationResourceTest : JerseyTest() {
                 )
             }.doReturn(observationListDto)
         }
-        observationTypeService.stub {
-            onBlocking {
-                isNumeric(anyString(), anyString(), eq("text-variable"))
-            }.doReturn(false)
-            onBlocking {
-                isNumeric(anyString(), anyString(), eq("numeric-variable"))
-            }.doReturn(true)
-        }
     }
 
-    @Test
-    fun testGetObservations() = runBlocking {
+    @ParameterizedTest
+    @CsvSource(
+        "project/$projectId/subject/$subjectId/topic/$topicId/observations",
+        "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/observations",
+        "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/observations",
+    )
+    fun testGetObservations(url: String) = runBlocking {
         // Make the call to the REST endpoint.
-        target("project/project-1/subject/sub-1/topic/topic-1/observations")
+        target(url)
             .request()
             .get()
             .use { response ->
@@ -163,8 +154,13 @@ class ObservationResourceTest : JerseyTest() {
             }
     }
 
-    @Test
-    fun testGetObservations_failNoSubjectId() = runBlocking {
+    @ParameterizedTest
+    @CsvSource(
+        "project/$projectId/subject//topic/$topicId/observations",
+        "project/$projectId/subject//topic/$topicId/category/$category/variable/numeric-variable/observations",
+        "project/$projectId/subject//topic/$topicId/variable/numeric-variable/observations",
+    )
+    fun testGetObservations_failNoSubjectId(url: String) = runBlocking {
         target("project/$projectId/subject//topic/$topicId/observations")
             .request()
             .get()
@@ -173,8 +169,13 @@ class ObservationResourceTest : JerseyTest() {
             }
     }
 
-    @Test
-    fun testGetObservations_failNoTopicId() = runBlocking {
+    @ParameterizedTest
+    @CsvSource(
+        "project/$projectId/subject/$subjectId/topic//observations",
+        "project/$projectId/subject/$subjectId/topic//category/$category/variable/numeric-variable/observations",
+        "project/$projectId/subject/$subjectId/topic//variable/numeric-variable/observations",
+    )
+    fun testGetObservations_failNoTopicId(url: String) = runBlocking {
         target("project/$projectId/subject/$subjectId/topic//observations")
             .request()
             .get()
@@ -183,40 +184,18 @@ class ObservationResourceTest : JerseyTest() {
             }
     }
 
-    @Test
-    fun testGetObservations_failNoProjectId() = runBlocking {
-        target("project//subject/$subjectId/topic/$topicId/observations")
+    @ParameterizedTest
+    @CsvSource(
+        "project//subject/$subjectId/topic/$topicId/observations",
+        "project//subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/observations",
+        "project//subject/$subjectId/topic/$topicId/variable/numeric-variable/observations",
+    )
+    fun testGetObservations_failNoProjectId(url: String) = runBlocking {
+        target(url)
             .request()
             .get()
             .use { response ->
                 assertEquals(404, response.status)
             }
-    }
-
-    @Test
-    fun testGetObservationsWithCategoryAndVariable() = runBlocking {
-        // Make the call to the REST endpoint.
-        target("project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/observations")
-            .request()
-            .get()
-            .use { response ->
-                // Expect the http response to be OK and the same as the expected DTO.
-                assertEquals(200, response.status)
-                assertEquals(observationListDto, response.readEntity(ObservationListDto::class.java))
-            }
-    }
-
-    @Test
-    fun testGetObservationsWithVariable() = runBlocking {
-        // Make the call to the REST endpoint.
-        target("project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/observations")
-            .request()
-            .get()
-            .use { response ->
-                // Expect the http response to be OK and the same as the expected DTO.
-                assertEquals(200, response.status)
-                assertEquals(observationListDto, response.readEntity(ObservationListDto::class.java))
-            }
-
     }
 }
