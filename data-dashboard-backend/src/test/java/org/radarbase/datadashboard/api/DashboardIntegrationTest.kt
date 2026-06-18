@@ -26,8 +26,10 @@ import org.glassfish.jersey.test.JerseyTest
 import org.glassfish.jersey.test.ServletDeploymentContext
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory
 import org.glassfish.jersey.test.spi.TestContainerFactory
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.radarbase.auth.authorization.AuthorizationOracle
 import org.radarbase.datadashboard.api.config.DashboardApiConfig
 import org.radarbase.datadashboard.api.enhancer.DashBoardApiEnhancerFactory
@@ -69,7 +71,7 @@ class DashboardIntegrationTest : JerseyTest() {
     fun testGetHealth() {
         // Added by the health enhancer from radar-jersey.
         val response = target("health").request().get()
-        Assertions.assertEquals(200, response.status)
+        assertEquals(200, response.status)
     }
 
     @Test
@@ -78,9 +80,25 @@ class DashboardIntegrationTest : JerseyTest() {
             .request()
             .get()
             .use { response ->
-                Assertions.assertEquals(200, response.status)
+                assertEquals(200, response.status)
             }
     }
 
-    // TODO add more tests that include the token validation.
+    @ParameterizedTest
+    @CsvSource(
+        "max, 15.0",
+        "min, 5.0",
+        "count, 3.0",
+        "average, 10.0",
+    )
+    fun testCalculateValues(func: String, expected: Double) {
+        target("project/project-1/subject/sub-1/topic/questionnaire_answer/category/baseline_questions/variable/Perceived_Pain_Score/$func")
+            .request()
+            .get()
+            .use { response ->
+                assertEquals(200, response.status)
+                assertEquals(expected, response.readEntity(Double::class.java))
+            }
+    }
+
 }
