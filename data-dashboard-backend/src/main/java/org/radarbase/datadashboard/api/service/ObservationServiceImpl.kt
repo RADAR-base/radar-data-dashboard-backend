@@ -71,7 +71,7 @@ class ObservationServiceImpl(
         )
     }
 
-    override fun getMaxByCategoryAndVariable(
+    override suspend fun calculateValueByCategoryAndVariable(
         projectId: String,
         subjectId: String,
         topicId: String,
@@ -79,7 +79,7 @@ class ObservationServiceImpl(
         variable: String,
         since: Instant?,
         until: Instant?,
-    ): Double? {
-        TODO("Not yet implemented")
-    }
+        func: (Iterable<Double>) -> Number?,
+    ): Number? =
+        func(observationRepository.getNumericValues(projectId, subjectId, topicId, category, variable, since, until))
 }

@@ -40,7 +40,7 @@ interface ObservationService {
         until: Instant? = null,
     ): ObservationListDto
 
-    fun getMaxByCategoryAndVariable(
+    suspend fun calculateValueByCategoryAndVariable(
         projectId: String,
         subjectId: String,
         topicId: String,
@@ -48,5 +48,6 @@ interface ObservationService {
         variable: String,
         since: Instant? = null,
         until: Instant? = null,
-    ): Double?
+        func: (Iterable<Double>) -> Number?,
+    ): Number?
 }

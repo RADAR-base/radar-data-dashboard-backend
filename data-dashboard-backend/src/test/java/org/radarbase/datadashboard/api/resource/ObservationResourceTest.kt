@@ -138,19 +138,6 @@ class ObservationResourceTest : JerseyTest() {
                 assertEquals(observationListDto, response.readEntity(ObservationListDto::class.java))
             }
     }
-//
-//    @Test
-//    fun testGetTestObservations() = runBlocking {
-//        // Make the call to the REST endpoint.
-//        target("project/project-1/subject/sub-1/topic/topic-1/test/test/observations")
-//            .request()
-//            .get()
-//            .use { response ->
-//                // Expect the http response to be OK and the same as the expected DTO.
-//                assertEquals(200, response.status)
-//                assertEquals(observationListDto, response.readEntity(ObservationListDto::class.java))
-//            }
-//    }
 
     @Test
     fun testGetObservations_failNoSubjectId() = runBlocking {

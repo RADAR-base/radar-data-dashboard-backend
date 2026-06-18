@@ -105,9 +105,103 @@ class ObservationResource(
         @QueryParam("since") since: Instant?,
         @QueryParam("until") until: Instant?,
         @Suspended asyncResponse: AsyncResponse,
+    ) = calculateValue(
+        projectId,
+        subjectId,
+        topicId,
+        category,
+        variable,
+        since,
+        until,
+        asyncResponse,
+        Iterable<Double>::maxOrNull
+    )
+
+    @GET
+    @Path("category/{category}/variable/{variable}/min")
+    @NeedsPermission(Permission.MEASUREMENT_READ, "projectId", "subjectId")
+    fun getMinByCategoryAndVariable(
+        @PathParam("projectId") projectId: String,
+        @PathParam("subjectId") subjectId: String,
+        @PathParam("topicId") topicId: String,
+        @PathParam("category") category: String,
+        @PathParam("variable") variable: String,
+        @QueryParam("since") since: Instant?,
+        @QueryParam("until") until: Instant?,
+        @Suspended asyncResponse: AsyncResponse,
+    ) = calculateValue(
+        projectId,
+        subjectId,
+        topicId,
+        category,
+        variable,
+        since,
+        until,
+        asyncResponse,
+        Iterable<Double>::minOrNull
+    )
+
+    @GET
+    @Path("category/{category}/variable/{variable}/count")
+    @NeedsPermission(Permission.MEASUREMENT_READ, "projectId", "subjectId")
+    fun getCountByCategoryAndVariable(
+        @PathParam("projectId") projectId: String,
+        @PathParam("subjectId") subjectId: String,
+        @PathParam("topicId") topicId: String,
+        @PathParam("category") category: String,
+        @PathParam("variable") variable: String,
+        @QueryParam("since") since: Instant?,
+        @QueryParam("until") until: Instant?,
+        @Suspended asyncResponse: AsyncResponse,
+    ) = calculateValue(
+        projectId,
+        subjectId,
+        topicId,
+        category,
+        variable,
+        since,
+        until,
+        asyncResponse,
+        Iterable<Double>::count
+    )
+
+    @GET
+    @Path("category/{category}/variable/{variable}/average")
+    @NeedsPermission(Permission.MEASUREMENT_READ, "projectId", "subjectId")
+    fun getMeanByCategoryAndVariable(
+        @PathParam("projectId") projectId: String,
+        @PathParam("subjectId") subjectId: String,
+        @PathParam("topicId") topicId: String,
+        @PathParam("category") category: String,
+        @PathParam("variable") variable: String,
+        @QueryParam("since") since: Instant?,
+        @QueryParam("until") until: Instant?,
+        @Suspended asyncResponse: AsyncResponse,
+    ) = calculateValue(
+        projectId,
+        subjectId,
+        topicId,
+        category,
+        variable,
+        since,
+        until,
+        asyncResponse
+    ) { it.average() }
+
+
+    private fun calculateValue(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String,
+        variable: String,
+        since: Instant?,
+        until: Instant?,
+        asyncResponse: AsyncResponse,
+        func: (Iterable<Double>) -> Number?,
     ) = asyncService.runAsCoroutine(asyncResponse) {
         when (typeService.isNumeric(topicId, category, variable)) {
-            true -> observationService.getMaxByCategoryAndVariable(
+            true -> observationService.calculateValueByCategoryAndVariable(
                 projectId = projectId,
                 subjectId = subjectId,
                 topicId = topicId,
@@ -115,9 +209,11 @@ class ObservationResource(
                 variable = variable,
                 since = since,
                 until = until,
+                func = func,
             )
-            null -> null // Means that there are no observations for this variable yet, and no calculation could be done at the moment of the request.
-            else -> throw IllegalArgumentException("Variable is not numeric")
+            // When no observations are found in the database return null
+            null -> null
+            else -> throw IllegalArgumentException("Variable is not numeric. Calculations are not possible.")
         }
     }
 
