@@ -30,6 +30,7 @@ import org.radarbase.datadashboard.api.domain.ObservationRepositoryImpl
 import org.radarbase.datadashboard.api.domain.mapper.toDto
 import org.radarbase.datadashboard.api.domain.model.Observation
 import org.radarbase.datadashboard.api.util.TestUtil.Companion.ObservationType
+import org.radarbase.datadashboard.api.util.TestUtil.Companion.category
 import org.radarbase.datadashboard.api.util.TestUtil.Companion.createObservation
 import org.radarbase.datadashboard.api.util.TestUtil.Companion.projectId
 import org.radarbase.datadashboard.api.util.TestUtil.Companion.subjectId
@@ -50,11 +51,12 @@ class ObservationServiceImplTest {
         observationService = ObservationServiceImpl(observationRepository)
         observations =
             listOf(
-                createObservation(ObservationType.STRING),
-                createObservation(ObservationType.STRING),
-                createObservation(ObservationType.STRING),
-                createObservation(ObservationType.STRING),
+                createObservation(ObservationType.INTEGER),
+                createObservation(ObservationType.INTEGER),
+                createObservation(ObservationType.INTEGER),
+                createObservation(ObservationType.INTEGER),
             )
+        val numbers = listOf(2.0, 4.0, 6.0)
         observationRepository.stub {
             onBlocking {
                 observationRepository.getObservations(
@@ -62,9 +64,20 @@ class ObservationServiceImplTest {
                     subjectId = subjectId,
                     topicId = topicId,
                     since = null,
-                    until = null
+                    until = null,
                 )
             }.doReturn(observations)
+            onBlocking {
+                observationRepository.getNumericValues(
+                    projectId = projectId,
+                    subjectId = subjectId,
+                    topicId = topicId,
+                    category = category,
+                    variable = "numeric-variable",
+                    since = null,
+                    until = null,
+                )
+            }.doReturn(numbers)
         }
     }
 
@@ -83,6 +96,18 @@ class ObservationServiceImplTest {
             observations.map { it.toDto() },
         )
         assertEquals(expectedDto, result)
+    }
+
+    @Test
+    fun testCalculate() = runBlocking {
+        val result = observationService.calculateValueByCategoryAndVariable(
+            projectId = projectId,
+            subjectId = subjectId,
+            topicId = topicId,
+            category = category,
+            variable = "numeric-variable"
+        ) { it.maxOrNull() }
+        assert(result == 6.0)
     }
 
 }
