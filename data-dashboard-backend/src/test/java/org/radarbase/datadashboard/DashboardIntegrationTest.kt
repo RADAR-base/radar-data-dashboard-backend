@@ -22,6 +22,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.servlet.ServletContainer
 import org.glassfish.jersey.test.DeploymentContext
+import org.glassfish.jersey.test.TestProperties
 import org.glassfish.jersey.test.JerseyTest
 import org.glassfish.jersey.test.ServletDeploymentContext
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory
@@ -41,6 +42,10 @@ import org.radarbase.jersey.service.ProjectService
 
 // These tests are not yet working because mocking/stubbing token validation is not yet working.
 class DashboardIntegrationTest : JerseyTest() {
+
+    init {
+        set(TestProperties.CONTAINER_PORT, "0")
+    }
 
     override fun configure(): ResourceConfig {
         val config: DashboardApiConfig = ConfigLoader.loadConfig("src/test/resources/dashboard_test.yml", emptyArray())

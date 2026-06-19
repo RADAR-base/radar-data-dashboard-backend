@@ -22,6 +22,7 @@ import jakarta.inject.Singleton
 import jakarta.ws.rs.core.Application
 import kotlinx.coroutines.runBlocking
 import org.glassfish.hk2.utilities.binding.AbstractBinder
+import org.glassfish.jersey.test.TestProperties
 import org.glassfish.jersey.test.JerseyTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -50,6 +51,10 @@ import org.radarbase.jersey.enhancer.JerseyResourceEnhancer
 import org.radarbase.jersey.service.AsyncCoroutineService
 
 class ObservationResourceTest : JerseyTest() {
+
+    init {
+        set(TestProperties.CONTAINER_PORT, "0")
+    }
 
     @Mock
     lateinit var observationService: ObservationService

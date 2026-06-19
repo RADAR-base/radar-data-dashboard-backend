@@ -19,9 +19,11 @@
 package org.radarbase.datadashboard.resource
 
 import jakarta.inject.Singleton
+import jakarta.ws.rs.client.WebTarget
 import jakarta.ws.rs.core.Application
 import kotlinx.coroutines.runBlocking
 import org.glassfish.hk2.utilities.binding.AbstractBinder
+import org.glassfish.jersey.test.TestProperties
 import org.glassfish.jersey.test.JerseyTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -52,6 +54,10 @@ import org.radarbase.jersey.enhancer.JerseyResourceEnhancer
 import org.radarbase.jersey.service.AsyncCoroutineService
 
 class ValueResourceTest : JerseyTest() {
+
+    init {
+        set(TestProperties.CONTAINER_PORT, "0")
+    }
 
     @Mock
     lateinit var observationService: ObservationService
@@ -107,36 +113,24 @@ class ValueResourceTest : JerseyTest() {
         observationService.stub {
             onBlocking {
                 getNumericValues(
-                    projectId = projectId,
-                    subjectId = subjectId,
-                    topicId = topicId,
-                    category = category,
-                    variable = "numeric-variable",
-                )
-            }.doReturn(numericValues)
-            onBlocking {
-                getNumericValues(
-                    projectId = projectId,
-                    subjectId = subjectId,
-                    topicId = topicId,
-                    variable = "numeric-variable",
+                    projectId = anyString(),
+                    subjectId = anyString(),
+                    topicId = anyString(),
+                    category = anyOrNull(),
+                    variable = eq("numeric-variable"),
+                    since = anyOrNull(),
+                    until = anyOrNull(),
                 )
             }.doReturn(numericValues)
             onBlocking {
                 getTextValues(
-                    projectId = projectId,
-                    subjectId = subjectId,
-                    topicId = topicId,
-                    category = category,
-                    variable = "text-variable",
-                )
-            }.doReturn(textValues)
-            onBlocking {
-                getTextValues(
-                    projectId = projectId,
-                    subjectId = subjectId,
-                    topicId = topicId,
-                    variable = "text-variable",
+                    projectId = anyString(),
+                    subjectId = anyString(),
+                    topicId = anyString(),
+                    category = anyOrNull(),
+                    variable = eq("text-variable"),
+                    since = anyOrNull(),
+                    until = anyOrNull(),
                 )
             }.doReturn(textValues)
             onBlocking {
@@ -164,11 +158,20 @@ class ValueResourceTest : JerseyTest() {
 
     @ParameterizedTest
     @CsvSource(
-        "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values",
-        "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values",
+        value = [
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values, null, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values, null, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values, 2020-06-01T00:00:00Z, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values, 2020-06-01T00:00:00Z, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values, null, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values, null, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z"
+        ],
+        nullValues = ["null"]
     )
-    fun testGetNumbers(url: String) = runBlocking {
-        target(url).request().get().use { response ->
+    fun testGetNumbers(url: String, since: String?, until: String?) = runBlocking {
+        buildTarget(url, since, until).request().get().use { response ->
             // Expect the http response to be OK and the same as the expected DTO.
             assertEquals(200, response.status)
             assertEquals(numericValues, response.readEntity(List::class.java))
@@ -177,11 +180,20 @@ class ValueResourceTest : JerseyTest() {
 
     @ParameterizedTest
     @CsvSource(
-        "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/text-variable/values",
-        "project/$projectId/subject/$subjectId/topic/$topicId/variable/text-variable/values",
+        value = [
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/text-variable/values, null, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/text-variable/values, null, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/text-variable/values, 2020-06-01T00:00:00Z, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/text-variable/values, 2020-06-01T00:00:00Z, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/text-variable/values, null, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/text-variable/values, null, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/text-variable/values, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/text-variable/values, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z"
+        ],
+        nullValues = ["null"]
     )
-    fun testGetText(url: String) = runBlocking {
-        target(url).request().get().use { response ->
+    fun testGetText(url: String, since: String?, until: String?) = runBlocking {
+        buildTarget(url, since, until).request().get().use { response ->
             // Expect the http response to be OK and the same as the expected DTO.
             assertEquals(200, response.status)
             assertEquals(textValues, response.readEntity(List::class.java))
@@ -190,14 +202,23 @@ class ValueResourceTest : JerseyTest() {
 
     @ParameterizedTest
     @CsvSource(
-        "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/max",
-        "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/max",
+        value = [
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/max, null, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/max, null, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/max, 2020-06-01T00:00:00Z, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/max, 2020-06-01T00:00:00Z, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/max, null, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/max, null, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/max, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/max, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z"
+        ],
+        nullValues = ["null"]
     )
-    fun testGetMax(url: String) = runBlocking {
+    fun testGetMax(url: String, since: String?, until: String?) = runBlocking {
         // Since a parameterized test is used, the reset and init functions are called for each test case.
         reset(observationService)
         init()
-        target(url).request().get().use { response ->
+        buildTarget(url, since, until).request().get().use { response ->
             // Expect the http response to be OK and the same as the expected DTO.
             assertEquals(200, response.status)
             assertEquals(stubCalculationResponse, response.readEntity(Double::class.java))
@@ -221,14 +242,23 @@ class ValueResourceTest : JerseyTest() {
 
     @ParameterizedTest
     @CsvSource(
-        "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/min",
-        "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/min",
+        value = [
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/min, null, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/min, null, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/min, 2020-06-01T00:00:00Z, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/min, 2020-06-01T00:00:00Z, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/min, null, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/min, null, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/min, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/min, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z"
+        ],
+        nullValues = ["null"]
     )
-    fun testGetMin(url: String) = runBlocking {
+    fun testGetMin(url: String, since: String?, until: String?) = runBlocking {
         // Since a parameterized test is used, the reset and init functions are called for each test case.
         reset(observationService)
         init()
-        target(url).request().get().use { response ->
+        buildTarget(url, since, until).request().get().use { response ->
             assertEquals(200, response.status)
             assertEquals(stubCalculationResponse, response.readEntity(Double::class.java))
         }
@@ -251,14 +281,23 @@ class ValueResourceTest : JerseyTest() {
 
     @ParameterizedTest
     @CsvSource(
-        "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/avg",
-        "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/avg",
+        value = [
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/avg, null, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/avg, null, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/avg, 2020-06-01T00:00:00Z, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/avg, 2020-06-01T00:00:00Z, null",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/avg, null, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/avg, null, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/avg, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/avg, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z"
+        ],
+        nullValues = ["null"]
     )
-    fun testGetAverage(url: String) = runBlocking {
+    fun testGetAverage(url: String, since: String?, until: String?) = runBlocking {
         // Since a parameterized test is used, the reset and init functions are called for each test case.
         reset(observationService)
         init()
-        target(url).request().get().use { response ->
+        buildTarget(url, since, until).request().get().use { response ->
             assertEquals(200, response.status)
             assertEquals(stubCalculationResponse, response.readEntity(Double::class.java))
         }
@@ -277,6 +316,17 @@ class ValueResourceTest : JerseyTest() {
         val capturedFunc = funcCaptor.firstValue
         val testData = listOf(10.0, 20.0, 30.0)
         assertEquals(20.0, capturedFunc(testData))
+    }
+
+    private fun buildTarget(url: String, since: String?, until: String?): WebTarget {
+        val target = target(url)
+        if (since != null) {
+            target.queryParam("since", since)
+        }
+        if (until != null) {
+            target.queryParam("until", until)
+        }
+        return target
     }
 
 }
