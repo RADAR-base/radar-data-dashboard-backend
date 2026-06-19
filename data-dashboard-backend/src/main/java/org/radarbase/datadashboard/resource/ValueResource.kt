@@ -254,16 +254,19 @@ class ValueResource(
         func: (Iterable<Double>) -> Number?,
     ) = asyncService.runAsCoroutine(asyncResponse) {
         when (typeService.isNumeric(topicId, category, variable)) {
-            true -> observationService.calculateValueByCategoryAndVariable(
-                projectId = projectId,
-                subjectId = subjectId,
-                topicId = topicId,
-                category = category,
-                variable = variable,
-                since = since,
-                until = until,
-                func = func,
-            )
+            true -> {
+                val r = observationService.calculateValueByCategoryAndVariable(
+                    projectId = projectId,
+                    subjectId = subjectId,
+                    topicId = topicId,
+                    category = category,
+                    variable = variable,
+                    since = since,
+                    until = until,
+                    func = func,
+                )
+                r
+            }
             // When no observations are found in the database return null
             null -> null
             else -> throw IllegalArgumentException("Variable is not numeric. Calculations are not possible.")

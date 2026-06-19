@@ -57,8 +57,8 @@ interface ObservationService {
         topicId: String,
         category: String? = null,
         variable: String,
-        since: Instant?,
-        until: Instant?
+        since: Instant? = null,
+        until: Instant? = null,
     ): List<String>
 
     suspend fun calculateValueByCategoryAndVariable(
