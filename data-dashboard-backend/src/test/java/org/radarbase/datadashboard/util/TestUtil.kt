@@ -18,7 +18,10 @@
 
 package org.radarbase.datadashboard.util
 
+import jakarta.ws.rs.client.WebTarget
+import org.glassfish.jersey.test.JerseyTest
 import org.radarbase.datadashboard.domain.model.Observation
+import org.radarbase.datadashboard.resource.ValueResourceTest
 import java.time.ZonedDateTime
 
 class TestUtil {
@@ -62,4 +65,15 @@ class TestUtil {
 
     }
 
+}
+
+fun JerseyTest.buildTarget(url: String, since: String?, until: String?): WebTarget {
+    var target = target(url)
+    if (since != null) {
+        target = target.queryParam("since", since)
+    }
+    if (until != null) {
+        target = target.queryParam("until", until)
+    }
+    return target
 }
