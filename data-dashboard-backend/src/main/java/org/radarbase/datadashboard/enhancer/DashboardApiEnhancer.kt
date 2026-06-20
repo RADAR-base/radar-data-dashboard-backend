@@ -50,6 +50,9 @@ class DashboardApiEnhancer(
         bind(config)
             .to(DashboardApiConfig::class.java)
 
+        bind(config.variableTypeCache)
+            .to(org.radarbase.datadashboard.config.VariableTypeCacheConfig::class.java)
+
         bind(ObservationServiceImpl::class.java)
             .to(ObservationService::class.java)
             .`in`(Singleton::class.java)

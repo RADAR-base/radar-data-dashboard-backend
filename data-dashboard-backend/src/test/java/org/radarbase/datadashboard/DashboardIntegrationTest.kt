@@ -93,16 +93,26 @@ class DashboardIntegrationTest : JerseyTest() {
     @CsvSource(
         "max, 15.0",
         "min, 5.0",
-        "count, 3.0",
-        "average, 10.0",
+        "avg, 10.0",
     )
     fun testCalculateValues(func: String, expected: Double) {
-        target("project/project-1/subject/sub-1/topic/questionnaire_answer/category/baseline_questions/variable/Perceived_Pain_Score/$func")
+        target("project/project-1/subject/sub-1/topic/questionnaire_answer/category/baseline_questions/variable/Perceived_Pain_Score/values/$func")
             .request()
             .get()
             .use { response ->
                 assertEquals(200, response.status)
                 assertEquals(expected, response.readEntity(Double::class.java))
+            }
+    }
+
+    @Test
+    fun testGetCount() {
+        target("project/project-1/subject/sub-1/topic/questionnaire_answer/category/baseline_questions/variable/Perceived_Pain_Score/observations/count")
+            .request()
+            .get()
+            .use { response ->
+                assertEquals(200, response.status)
+                assertEquals(3, response.readEntity(Int::class.java))
             }
     }
 
