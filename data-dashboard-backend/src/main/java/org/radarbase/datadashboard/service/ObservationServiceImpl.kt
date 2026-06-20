@@ -108,20 +108,7 @@ class ObservationServiceImpl(
             since = since,
             until = until,
         )
-//
-//    override suspend fun calculateValue(
-//        projectId: String,
-//        subjectId: String,
-//        topicId: String,
-//        category: String,
-//        variable: String,
-//        operation: String,
-//        since: Instant?,
-//        until: Instant?,
-//    ): Any? {
-//        TODO("Not yet implemented")
-//    }
-//
+
     override suspend fun calculateValueByCategoryAndVariable(
         projectId: String,
         subjectId: String,
@@ -130,7 +117,7 @@ class ObservationServiceImpl(
         variable: String,
         since: Instant?,
         until: Instant?,
-        func: (Iterable<Double>) -> Number?
+        func: (Iterable<Double>) -> Number?,
     ): Number? =
         func(observationRepository.getNumericValues(projectId, subjectId, topicId, category, variable, since, until))
 }
