@@ -20,12 +20,15 @@ package org.radarbase.datadashboard.service
 
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
+import org.junit.jupiter.params.provider.CsvSource
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.stub
 import org.radarbase.datadashboard.domain.ObservationRepositoryImpl
+import org.radarbase.datadashboard.util.TestUtil.Companion.category
+import org.radarbase.datadashboard.util.TestUtil.Companion.topicId
+import org.radarbase.datadashboard.util.cacheKey
 
 class ObservationTypeServiceImplTest {
 
@@ -33,87 +36,48 @@ class ObservationTypeServiceImplTest {
     @Mock
     private lateinit var observationRepository: ObservationRepositoryImpl
 
-    private val topicId = "topic-1"
-    private val category = "category-1"
-
     private val observationTypeService: ObservationTypeServiceImpl
 
     init {
         // Initialize all Mockito mocks.
         MockitoAnnotations.openMocks(this)
-        observationTypeService = ObservationTypeServiceImpl(observationRepository)
+        observationTypeService = ObservationTypeServiceImpl(
+            observationRepository,
+            org.radarbase.datadashboard.config.VariableTypeCacheConfig()
+        )
         observationRepository.stub {
             onBlocking {
-                getVariableType(
-                    topicId = topicId,
-                    category = category,
-                    variable = "string-variable",
+                getNumericVariableTypes()
+            }.doReturn(
+                mapOf(
+                    cacheKey(topicId, category, "integer-variable") to true,
+                    cacheKey(topicId, category, "string-variable") to false,
+                    cacheKey(topicId, category, "double-variable") to true,
+                    cacheKey(topicId, category, "json-variable") to false,
                 )
-            }.doReturn("STRING")
-            onBlocking {
-                getVariableType(
-                    topicId = topicId,
-                    category = category,
-                    variable = "integer-variable",
-                )
-            }.doReturn("INTEGER")
-            onBlocking {
-                getVariableType(
-                    topicId = topicId,
-                    category = category,
-                    variable = "double-variable",
-                )
-            }.doReturn("DOUBLE")
-            onBlocking {
-                getVariableType(
-                    topicId = topicId,
-                    category = category,
-                    variable = "json-variable",
-                )
-            }.doReturn("STRING_JSON")
-            onBlocking {
-                getVariableType(
-                    topicId = topicId,
-                    category = category,
-                    variable = "non-existing-variable",
-                )
-            }.doReturn(null)
+            )
         }
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["string-variable", "json-variable"])
-    fun test_isNotNumeric(variableName: String) = runBlocking {
+    @CsvSource(
+        value = [
+            "integer-variable, true",
+            "string-variable, false",
+            "double-variable, true",
+            "json-variable, false",
+            "non-existing-variable, null",
+        ],
+        nullValues = ["null"]
+    )
+    fun test_hasNumericValues(variableName: String, hasNumericValues: Boolean?) = runBlocking {
         assert(
-            observationTypeService.isNumeric(
+            observationTypeService.hasNumericValues(
                 topic = topicId,
                 category = category,
                 variable = variableName,
-            ) == false
+            ) == hasNumericValues
         )
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = ["integer-variable", "double-variable"])
-    fun test_isNumeric(variableName: String) = runBlocking {
-        assert(
-            observationTypeService.isNumeric(
-                topic = topicId,
-                category = category,
-                variable = variableName,
-            ) == true
-        )
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = ["non-existing-variable"])
-    fun test_isNull(variableName: String) = runBlocking {
-        assert(
-            observationTypeService.isNumeric(
-                topic = topicId,
-                category = category,
-                variable = variableName,
-            ) == null
-        )
-    }
 }

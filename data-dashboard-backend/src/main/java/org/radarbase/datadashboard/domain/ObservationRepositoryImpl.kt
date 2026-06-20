@@ -23,6 +23,7 @@ import jakarta.persistence.EntityManager
 import jakarta.ws.rs.core.Context
 import org.hibernate.exception.SQLGrammarException
 import org.radarbase.datadashboard.domain.model.Observation
+import org.radarbase.datadashboard.util.cacheKey
 import org.radarbase.jersey.hibernate.HibernateRepository
 import org.radarbase.jersey.service.AsyncCoroutineService
 import org.slf4j.LoggerFactory
@@ -93,7 +94,7 @@ class ObservationRepositoryImpl(
             subjectId,
             projectId
         )
-        val observations = performQuery<Observation>(query, params,)
+        val observations = performQuery<Observation>(query, params)
         if (category == null && observations.any { it.category != null })
             throw IllegalStateException("Category was null in request, but observation had category. A category must be supplied for this variable.")
         return observations
@@ -121,6 +122,20 @@ class ObservationRepositoryImpl(
             }
         }
         return observation?.type
+    }
+
+    override suspend fun getNumericVariableTypes(): Map<String, Boolean> {
+        val query = "SELECT DISTINCT o.topic, o.category, o.variable, o.type FROM Observation o"
+        return transact {
+            @Suppress("UNCHECKED_CAST")
+            (createQuery(query, Array::class.java).resultList as List<Array<Any?>>)
+                .groupBy({ (topic, category, variable) ->
+                    cacheKey(topic as String, category as String?, variable as String)
+                }, { (_, _, _, type) ->
+                    type == "INTEGER" || type == "DOUBLE"
+                })
+                .mapValues { (_, values) -> values.any { it } }
+        }
     }
 
     override suspend fun getNumericValues(
@@ -195,7 +210,7 @@ class ObservationRepositoryImpl(
 
     private suspend inline fun <reified T> performQuery(
         query: String,
-        params: List<Pair<String, Any>>,
+        params: List<Pair<String, Any>>? = null,
         limit: Int? = null,
     ): List<T> {
         return transact {
@@ -204,9 +219,9 @@ class ObservationRepositoryImpl(
                     query,
                     T::class.java,
                 ).apply {
-                    params.forEach { this.setParameter(it.first, it.second) }
+                    params?.forEach { this.setParameter(it.first, it.second) }
                     limit?.let {
-                        setMaxResults(it)
+                        maxResults = it
                     }
                 }.resultList
             } catch (ex: SQLGrammarException) {

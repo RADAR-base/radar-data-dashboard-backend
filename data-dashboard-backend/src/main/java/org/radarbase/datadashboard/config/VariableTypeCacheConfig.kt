@@ -16,8 +16,16 @@
  *
  */
 
-package org.radarbase.datadashboard.service
+package org.radarbase.datadashboard.config
 
-interface ObservationTypeService {
-    suspend fun hasNumericValues(topic: String, category: String? = null, variable: String): Boolean?
+data class VariableTypeCacheConfig(
+    // This needs activation of the UseJavaDurationConversion module in Jackson Object mapper
+    // val refreshDuration: Duration = Duration.parse("30m"),
+    val refreshDurationSec: Int = 1800,
+) {
+    fun withEnv(): VariableTypeCacheConfig = copy(
+        refreshDurationSec = System.getenv("DATA_DASHBOARD_VARIABLE_TYPE_CACHE_REFRESH_DURATION_SECONDS")?.toInt()
+            ?: refreshDurationSec
+    )
+
 }

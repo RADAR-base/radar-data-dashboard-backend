@@ -16,8 +16,7 @@
  *
  */
 
-package org.radarbase.datadashboard.service
+package org.radarbase.datadashboard.util
 
-interface ObservationTypeService {
-    suspend fun hasNumericValues(topic: String, category: String? = null, variable: String): Boolean?
-}
+fun cacheKey(topic: String, category: String?, variable: String): String =
+    "${topic}:${category ?: "null"}:${variable}"

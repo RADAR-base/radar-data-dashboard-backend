@@ -21,5 +21,7 @@ database:
   properties:
     jakarta.persistence.schema-generation.database.action: none
     hibernate.globally_quoted_identifiers: true
-    hibernate.physical_naming_strategy: org.radarbase.datadashboard.api.util.TestHibernateNamingStrategy
+    hibernate.physical_naming_strategy: org.radarbase.datadashboard.util.TestHibernateNamingStrategy
 
+variableTypeCache:
+  refreshDurationSec: 1800

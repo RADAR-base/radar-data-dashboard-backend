@@ -1,6 +1,6 @@
 /*
  *
- *  *  Copyright 2024 The Hyve
+ *  *  Copyright 2026 The Hyve
  *  *
  *  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  *  you may not use this file except in compliance with the License.
@@ -28,11 +28,13 @@ data class DashboardApiConfig(
     ),
     val database: DatabaseConfig = DatabaseConfig(),
     val hazelcast: HazelcastConfig = HazelcastConfig(),
+    val variableTypeCache: VariableTypeCacheConfig = VariableTypeCacheConfig()
 ) {
     fun withEnv(): DashboardApiConfig = copy(
         service = service.withEnv(),
         auth = auth.withEnv(),
         database = database.withEnv(),
         hazelcast = hazelcast.withEnv(),
+        variableTypeCache = variableTypeCache.withEnv()
     )
 }

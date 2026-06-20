@@ -34,3 +34,6 @@ hazelcast:
           service-name: data-dashboard-backend
           service-port: 5801
           namespace: default
+
+variableTypeCache:
+  refreshDuration: 1800

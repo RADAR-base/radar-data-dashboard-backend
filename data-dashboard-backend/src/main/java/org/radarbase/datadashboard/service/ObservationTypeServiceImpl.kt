@@ -19,43 +19,39 @@
 package org.radarbase.datadashboard.service
 
 import jakarta.ws.rs.core.Context
+import org.radarbase.datadashboard.config.VariableTypeCacheConfig
 import org.radarbase.datadashboard.domain.ObservationRepository
-import java.util.Locale.getDefault
+import org.radarbase.datadashboard.util.cacheKey
+import org.radarbase.kotlin.coroutines.CacheConfig
+import org.radarbase.kotlin.coroutines.CachedMap
+import kotlin.time.Duration.Companion.seconds
 
 
 class ObservationTypeServiceImpl(
     @Context private val observationRepository: ObservationRepository,
+    @Context private val config: VariableTypeCacheConfig,
 ) : ObservationTypeService {
 
-    val typeCache = mutableMapOf<String, String?>()
-    val isNumericCache = mutableMapOf<String, Boolean?>()
-
-    val supplier: suspend (String, String?, String) -> String? = { topic: String, category: String?, variable: String ->
-        observationRepository.getVariableType(topic, category, variable)
+    // All values of observations are submitted to Kafka as string. Type is inferred independently for each observation
+    // value (check whether the string can be parsed as a number). As a result, a variable may 'develop' numeric values
+    // over time as more data is submitted. This cache is refreshed periodically to account for this.
+    private val numericVariableCache = CachedMap(
+        CacheConfig(refreshDuration = config.refreshDurationSec.seconds)
+    ) {
+        observationRepository.getNumericVariableTypes()
     }
 
     /**
-     * <p>Determine whether the variable of an observation is numeric.</p>
+     * <p>Determine whether the variable type of observation is numeric.</p>
      * @param topic Name of the kafka topic that contains the observation (e.g., questionnaire_response)
      * @param category Category name of the observation (e.g., baseline_questions)
      * @param variable Variable name of the observation (e.g., Perceived_Pain_Score)
-     * @return null when the variable type is not found
-     * @return false when the variable type is not numeric
-     * @return true when the variable type is numeric
+     * @return null when the variable type is unknown (no observations in the database at the moment of the request)
+     * @return false when the variable has observations at the moment of the request that can be cast to numeric
+     * @return true when the variable has no observations at the moment of the request that can be cast to numeric
      */
-    override suspend fun isNumeric(topic: String, category: String?, variable: String): Boolean? {
-        val cacheKey = "${topic}:${category ?: "null"}:${variable}"
-        return isNumericCache.getOrPut(cacheKey) {
-            typeCache.getOrPut(cacheKey) {
-                supplier(topic, category, variable)
-            }?.let {
-                numericTypes.contains(it.lowercase(getDefault()))
-            }
-        }
-    }
-
-    companion object {
-        val numericTypes = listOf("integer", "double")
+    override suspend fun hasNumericValues(topic: String, category: String?, variable: String): Boolean? {
+        return numericVariableCache.get(cacheKey(topic, category, variable))
     }
 
 }

@@ -64,7 +64,7 @@ class ValueResource(
     ) = asyncService.runAsCoroutine(asyncResponse) {
         // when the data type cannot be determined, this means that there are no
         // observations for this subject. return emtpy list in this case.
-        val isNumericVariable = typeService.isNumeric(topicId, category, variable) ?: return@runAsCoroutine listOf()
+        val isNumericVariable = typeService.hasNumericValues(topicId, category, variable) ?: return@runAsCoroutine listOf()
         if (isNumericVariable) {
             observationService.getNumericValues(projectId, subjectId, topicId, category, variable, since, until)
         } else {
@@ -157,7 +157,7 @@ class ValueResource(
         // when the data type cannot be determined, this means that there are no
         // observations for this subject. return emtpy list in this case.
         val isNumericVariable =
-            typeService.isNumeric(topic = topicId, variable = variable) ?: return@runAsCoroutine listOf()
+            typeService.hasNumericValues(topic = topicId, variable = variable) ?: return@runAsCoroutine listOf()
         if (isNumericVariable) {
             observationService.getNumericValues(
                 projectId = projectId,
@@ -253,7 +253,7 @@ class ValueResource(
         asyncResponse: AsyncResponse,
         func: (Iterable<Double>) -> Number?,
     ) = asyncService.runAsCoroutine(asyncResponse) {
-        when (typeService.isNumeric(topicId, category, variable)) {
+        when (typeService.hasNumericValues(topicId, category, variable)) {
             true -> {
                 val r = observationService.calculateValueByCategoryAndVariable(
                     projectId = projectId,

@@ -154,10 +154,10 @@ class ValueResourceTest : JerseyTest() {
         }
         observationTypeService.stub {
             onBlocking {
-                isNumeric(anyString(), anyOrNull(), eq("text-variable"))
+                hasNumericValues(anyString(), anyOrNull(), eq("text-variable"))
             }.doReturn(false)
             onBlocking {
-                isNumeric(anyString(), anyOrNull(), eq("numeric-variable"))
+                hasNumericValues(anyString(), anyOrNull(), eq("numeric-variable"))
             }.doReturn(true)
         }
     }

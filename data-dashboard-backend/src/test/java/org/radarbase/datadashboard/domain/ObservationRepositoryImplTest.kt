@@ -47,7 +47,7 @@ class ObservationRepositoryImplTest : RepositoryTest() {
             subjectId = "sub-1",
             topicId = "questionnaire_answer",
         )
-        assertEquals(4, observations.size)
+        assertEquals(6, observations.size)
     }
 
     @Test
@@ -60,7 +60,7 @@ class ObservationRepositoryImplTest : RepositoryTest() {
             until = null,
         )
 
-        assertEquals(4, observations.size)
+        assertEquals(6, observations.size)
         val variables = observations.map { it.variable }.toSet()
         assertTrue(variables.contains("Perceived_Pain_Score"))
         assertTrue(variables.contains("Name_Of_Physician"))
@@ -75,7 +75,7 @@ class ObservationRepositoryImplTest : RepositoryTest() {
             since = Instant.parse("2021-01-20T12:00:00Z"),
         )
 
-        assertEquals(3, observations.size)
+        assertEquals(4, observations.size)
         val variables = observations.map { it.variable }.toSet()
         assertTrue(variables.contains("Name_Of_Physician"))
     }
@@ -89,7 +89,7 @@ class ObservationRepositoryImplTest : RepositoryTest() {
             until = Instant.parse("2021-01-20T12:00:00Z"),
         )
 
-        assertEquals(1, observations.size)
+        assertEquals(2, observations.size)
         val variables = observations.map { it.variable }.toSet()
         assertTrue(variables.contains("Perceived_Pain_Score"))
     }
@@ -106,7 +106,7 @@ class ObservationRepositoryImplTest : RepositoryTest() {
 
         assertEquals(3, observations.size)
         assertEquals("Perceived_Pain_Score", observations[0].variable)
-        assertEquals(5.0, observations[0].valueNumeric)
+        assertEquals(15.0, observations[0].valueNumeric)
     }
 
     @ParameterizedTest
@@ -211,4 +211,14 @@ class ObservationRepositoryImplTest : RepositoryTest() {
         }
     }
 
+    @Test
+    fun testGetNumericVariableTypes() = runBlocking {
+        val types = repository.getNumericVariableTypes()
+        assertEquals(5, types.size)
+        assertEquals(true, types["questionnaire_answer:baseline_questions:Perceived_Pain_Score"])
+        assertEquals(true, types["phone_battery_level:null:batteryLevel"])
+        assertEquals(false, types["phone_battery_level:null:status"])
+        assertEquals(false, types["questionnaire_answer:followup_questions:Name_Of_Physician"])
+        assertEquals(true, types["questionnaire_answer:baseline_questions:Variable_With_Mixed_Ksql_Type"])
+    }
 }
