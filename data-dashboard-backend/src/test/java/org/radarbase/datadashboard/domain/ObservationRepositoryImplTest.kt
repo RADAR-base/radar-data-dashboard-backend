@@ -202,16 +202,6 @@ class ObservationRepositoryImplTest : RepositoryTest() {
     }
 
     @Test
-    fun testExceptionNullCategoryInVariableWithCategoryForTypes(): Unit = runBlocking {
-        assertThrows<IllegalStateException> {
-            repository.getVariableType(
-                topicId = "questionnaire_answer",
-                variable = "Name_Of_Physician",
-            )
-        }
-    }
-
-    @Test
     fun testGetNumericVariableTypes() = runBlocking {
         val types = repository.getNumericVariableTypes()
         assertEquals(5, types.size)

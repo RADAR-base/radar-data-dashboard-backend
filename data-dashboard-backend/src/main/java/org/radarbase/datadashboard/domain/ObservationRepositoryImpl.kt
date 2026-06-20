@@ -100,30 +100,6 @@ class ObservationRepositoryImpl(
         return observations
     }
 
-    override suspend fun getVariableType(
-        topicId: String,
-        category: String?,
-        variable: String,
-    ): String? {
-        val query = buildString {
-            append("SELECT o FROM Observation o WHERE o.topic = :topicId AND o.variable = :variable")
-            if (category != null) append(" AND o.category = :category")
-        }
-        val params = buildList<Pair<String, Any>> {
-            add(Pair("topicId", topicId))
-            add(Pair("variable", variable))
-            if (category != null) add(Pair("category", category))
-        }
-        logger.debug("Get type for variable {} in category {} of topic {}", variable, category, topicId)
-        val observation = performQuery<Observation>(query, params, limit = 1).firstOrNull()
-        observation?.category.let {
-            if (category == null) {
-                throw IllegalStateException("Category was null in request, but observation had category. A category must be supplied for this variable.")
-            }
-        }
-        return observation?.type
-    }
-
     override suspend fun getNumericVariableTypes(): Map<String, Boolean> {
         val query = "SELECT DISTINCT o.topic, o.category, o.variable, o.type FROM Observation o"
         return transact {
