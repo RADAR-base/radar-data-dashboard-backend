@@ -14,6 +14,7 @@ the data from the RADAR-base kafka service.[]
     * [Value Endpoints](#value-endpoints)
     * [Examples](#examples)
   * [Installation](#installation)
+  * [Configuration](#configuration)
   * [Authorization](#authorization)
     * [Registering OAuth Clients with ManagementPortal](#registering-oauth-clients-with-managementportal)
   * [Sentry monitoring](#sentry-monitoring)
@@ -79,17 +80,38 @@ Similar endpoints are available with a category: `/project/{projectId}/subject/{
 
 ## Installation
 
-To install functional RADAR-base Rest-Sources Authorizer application with minimal dependencies from source, please use
+To install functional RADAR-base Data Dashboard backend application with minimal dependencies from source, please use
 the `docker-compose.yml` under the root directory.
 
-Copy the `docker/etc/rest-source-authorizer/authorizer.yml.template`
-into `docker/etc/rest-source-authorizer/authorizer.yml` and modify the `restSourceClients.FitBit.clientId`
-and `restSourceClients.FitBit.clientSecret` with your Fitbit client application credentials. Then start the
-docker-compose stack:
+Start the docker-compose stack:
 
 ```bash
 docker-compose up -d --build
 ```
+
+## Configuration
+
+The application can be configured using a YAML configuration file. By default, it looks for `dashboard.yml` in the current directory.
+
+| YAML path | Environment variable | Default value | Description |
+| --- | --- | --- | --- |
+| `service.baseUri` | `DATA_DASHBOARD_BASE_URI` | `http://0.0.0.0:9000/data-dashboard-backend/` | Base URI of the application |
+| `service.advertisedBaseUri` | `DATA_DASHBOARD_ADVERTISED_BASE_URI` | `null` | Advertised base URI |
+| `service.frontendBaseUri` | `DATA_DASHBOARD_FRONTEND_BASE_URI` | `null` | Base URI of the frontend |
+| `service.enableCors` | `DATA_DASHBOARD_ENABLE_CORS` | `false` | Enable CORS |
+| `service.tokenExpiryTimeInMinutes` | `DATA_DASHBOARD_TOKEN_EXPIRY_TIME_IN_MINUTES` | `15` | Token expiry time in minutes |
+| `service.persistentTokenExpiryInMin` | `DATA_DASHBOARD_PERSISTENT_TOKEN_EXPIRY_IN_MIN` | `4320` | Persistent token expiry in minutes |
+| `auth.managementPortal.url` | `MANAGEMENTPORTAL_URL` | `null` | ManagementPortal URL |
+| `auth.managementPortal.clientId` | `MANAGEMENTPORTAL_CLIENT_ID` | `null` | ManagementPortal client ID |
+| `auth.managementPortal.clientSecret` | `MANAGEMENTPORTAL_CLIENT_SECRET` | `null` | ManagementPortal client secret |
+| `database.url` | `DATABASE_URL` | `null` | Database URL |
+| `database.user` | `DATABASE_USER` | `null` | Database user |
+| `database.password` | `DATABASE_PASSWORD` | `null` | Database password |
+| `hazelcast.enable` | `HAZELCAST_ENABLE` | `false` | Enable Hazelcast |
+| `hazelcast.configPath` | `HAZELCAST_CONFIG_PATH` | `null` | Path to Hazelcast configuration file |
+| `hazelcast.instanceName` | `HAZELCAST_INSTANCE_NAME` | `data-dashboard-backend` | Hazelcast instance name |
+| `hazelcast.clusterName` | `HAZELCAST_CLUSTER_NAME` | `data-dashboard-backend` | Hazelcast cluster name |
+| `variableTypeCache.refreshDurationSec` | `DATA_DASHBOARD_VARIABLE_TYPE_CACHE_REFRESH_DURATION_SECONDS` | `1800` | Refresh duration for variable type cache (seconds) |
 
 ## Authorization
 
