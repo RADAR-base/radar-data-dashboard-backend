@@ -20,7 +20,7 @@ package org.radarbase.datadashboard.backend.util
 
 import org.hibernate.boot.model.naming.Identifier
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment
-import org.radarbase.datadashboard.backend.domain.model.CamelCaseToUppercaseColumnNamingStrategy
+import org.radarbase.datadashboard.backend.domain.hibernate.CamelCaseToUppercaseColumnNamingStrategy
 
 class H2HibernateNamingStrategy : CamelCaseToUppercaseColumnNamingStrategy() {
     override fun toPhysicalTableName(logicalName: Identifier?, jdbcEnvironment: JdbcEnvironment?): Identifier? =

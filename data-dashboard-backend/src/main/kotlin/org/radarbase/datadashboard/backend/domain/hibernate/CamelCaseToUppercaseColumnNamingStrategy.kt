@@ -16,7 +16,7 @@
  *
  */
 
-package org.radarbase.datadashboard.backend.domain.model
+package org.radarbase.datadashboard.backend.domain.hibernate
 
 import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
 import org.hibernate.boot.model.naming.Identifier
