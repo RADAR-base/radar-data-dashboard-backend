@@ -46,8 +46,8 @@ class ObservationRepositoryImpl(
     ): List<Observation> {
         val query = buildString {
             append("SELECT o FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId")
-            if (since != null) append(" AND o.observationTime > :since")
-            if (until != null) append(" AND o.observationTime <= :until")
+            if (since != null) append(" AND o.observationTime >= :since")
+            if (until != null) append(" AND o.observationTime < :until")
             append(" ORDER BY o.observationTime DESC")
         }
         val params = buildList<Pair<String, Any>> {
@@ -73,8 +73,8 @@ class ObservationRepositoryImpl(
         val query = buildString {
             append("SELECT o FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND  o.variable = :variable")
             if (category != null) append(" AND o.category = :category")
-            if (since != null) append(" AND o.observationTime > :since")
-            if (until != null) append(" AND o.observationTime <= :until")
+            if (since != null) append(" AND o.observationTime >= :since")
+            if (until != null) append(" AND o.observationTime < :until")
             append(" ORDER BY o.observationTime DESC")
         }
         val params = buildList<Pair<String, Any>> {
@@ -126,8 +126,8 @@ class ObservationRepositoryImpl(
         val query = buildString {
             append("SELECT o.valueNumeric FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.variable = :variable")
             if (category != null) append(" AND o.category = :category")
-            if (since != null) append(" AND o.observationTime > :since")
-            if (until != null) append(" AND o.observationTime <= :until")
+            if (since != null) append(" AND o.observationTime >= :since")
+            if (until != null) append(" AND o.observationTime < :until")
         }
         val params = buildList<Pair<String, Any>> {
             add(Pair("projectId", projectId))
@@ -161,8 +161,8 @@ class ObservationRepositoryImpl(
         val query = buildString {
             append("SELECT o.valueTextual FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.variable = :variable")
             if (category != null) append(" AND o.category = :category")
-            if (since != null) append(" AND o.observationTime > :since")
-            if (until != null) append(" AND o.observationTime <= :until")
+            if (since != null) append(" AND o.observationTime >= :since")
+            if (until != null) append(" AND o.observationTime < :until")
         }
         val params = buildList<Pair<String, Any>> {
             add(Pair("projectId", projectId))
