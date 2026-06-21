@@ -5,15 +5,18 @@ for Subjects (participants). The data layer connects to the TimescaleDB database
 the data from the RADAR-base kafka service.[]
 
 <!-- TOC -->
-
 * [RADAR-base Data Dashboard backend](#radar-base-data-dashboard-backend)
-    * [Features supported](#features-supported)
-    * [APIs to be used by REST Source-Connectors](#apis-to-be-used-by-rest-source-connectors)
-    * [Installation](#installation)
-    * [Authorization](#authorization)
-        * [Registering OAuth Clients with ManagementPortal](#registering-oauth-clients-with-managementportal)
-    * [Sentry monitoring](#sentry-monitoring)
-
+  * [Features supported](#features-supported)
+  * [APIs to be used by REST Source-Connectors](#apis-to-be-used-by-rest-source-connectors)
+    * [Path Parameters](#path-parameters)
+    * [Query Parameters](#query-parameters)
+    * [Observation Endpoints](#observation-endpoints)
+    * [Value Endpoints](#value-endpoints)
+    * [Examples](#examples)
+  * [Installation](#installation)
+  * [Authorization](#authorization)
+    * [Registering OAuth Clients with ManagementPortal](#registering-oauth-clients-with-managementportal)
+  * [Sentry monitoring](#sentry-monitoring)
 <!-- TOC -->
 
 ## Features supported
@@ -25,7 +28,54 @@ the data from the RADAR-base kafka service.[]
 
 Data dashboard applications can use the APIs as follows.
 
-`GET */project/{projectId}/subject/{subjectId}/topic/{topicId}/observations`
+All endpoints are relative to the base URL and require a `MEASUREMENT.READ` scope.
+
+### Path Parameters
+
+- `projectId`: The ID of the project.
+- `subjectId`: The ID of the subject.
+- `topicId`: The ID of the topic.
+- `category`: (Optional) The category of the observation.
+- `variable`: The variable name.
+
+### Query Parameters
+
+- `since`: (Optional) Filter observations since this timestamp (inclusive).
+- `until`: (Optional) Filter observations until this timestamp (exclusive).
+
+Timestamps should be in ISO-8601 format, e.g., `2026-06-21T13:00:00Z`.
+
+### Observation Endpoints
+
+- `GET /project/{projectId}/subject/{subjectId}/topic/{topicId}/observations`
+  Retrieve all observations for a subject and topic.
+- `GET /project/{projectId}/subject/{subjectId}/topic/{topicId}/observations/count`
+  Retrieve the count of observations.
+- `GET /project/{projectId}/subject/{subjectId}/topic/{topicId}/variable/{variable}/observations`
+  Retrieve observations for a specific variable.
+- `GET /project/{projectId}/subject/{subjectId}/topic/{topicId}/category/{category}/variable/{variable}/observations`
+  Retrieve observations for a specific category and variable.
+
+### Value Endpoints
+
+- `GET /project/{projectId}/subject/{subjectId}/topic/{topicId}/variable/{variable}/values`
+  Retrieve values for a specific variable.
+- `GET /project/{projectId}/subject/{subjectId}/topic/{topicId}/variable/{variable}/values/min`
+  Retrieve the minimum value for a variable.
+- `GET /project/{projectId}/subject/{subjectId}/topic/{topicId}/variable/{variable}/values/max`
+  Retrieve the maximum value for a variable.
+- `GET /project/{projectId}/subject/{subjectId}/topic/{topicId}/variable/{variable}/values/avg`
+  Retrieve the average value for a variable.
+
+Similar endpoints are available with a category: `/project/{projectId}/subject/{subjectId}/topic/{topicId}/category/{category}/variable/{variable}/values` (also for `min`, `max`, `avg`).
+
+### Examples
+
+**Retrieve observations since a specific time:**
+`GET /project/my-project/subject/my-subject/topic/my-topic/observations?since=2026-01-01T00:00:00Z`
+
+**Retrieve observations within a time range:**
+`GET /project/my-project/subject/my-subject/topic/my-topic/observations?since=2026-01-01T00:00:00Z&until=2026-01-02T00:00:00Z`
 
 ## Installation
 
