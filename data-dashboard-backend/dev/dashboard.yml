@@ -19,4 +19,4 @@ database:
     contexts: [dev]
   properties:
     hibernate.globally_quoted_identifiers: true
-    hibernate.physical_naming_strategy: org.radarbase.datadashboard.api.domain.model.CamelCaseToUppercaseColumnNamingStrategy
+    hibernate.physical_naming_strategy: org.radarbase.datadashboard.backend.domain.hibernate.CamelCaseToUppercaseColumnNamingStrategy
