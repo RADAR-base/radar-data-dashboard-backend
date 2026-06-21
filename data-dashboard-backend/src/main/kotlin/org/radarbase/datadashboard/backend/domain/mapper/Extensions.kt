@@ -30,11 +30,7 @@ fun Observation.toDto(): ObservationDto = ObservationDto(
     category = category,
     variable = variable,
     observation_time = observationTime.toString(),
-    period = if (observationTimeEnd != null) {
-        Duration.between(observationTime, observationTimeEnd).toString()
-    } else {
-        null
-    },
+    period = observationTimeEnd?.let { Duration.between(observationTime, it).toString() },
     type = type,
     value = valueNumeric ?: valueTextual,
 )
