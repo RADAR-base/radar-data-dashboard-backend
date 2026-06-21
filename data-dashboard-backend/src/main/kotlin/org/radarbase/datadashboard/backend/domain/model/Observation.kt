@@ -27,44 +27,44 @@ import java.util.*
 
 @Entity
 @Table(name = "observation")
-data class Observation(
+class Observation(
     @Column(nullable = false)
     @Id
-    val project: String,
+    var project: String,
 
     @Column(nullable = false)
     @Id
-    val subject: String,
+    var subject: String,
 
     @Id
-    val source: String,
+    var source: String,
 
     @Column(nullable = false, name = "topic_name")
     @Id
-    val topic: String,
+    var topic: String,
 
-    val category: String?,
+    var category: String?,
 
     @Column(nullable = false)
     @Id
-    val variable: String,
+    var variable: String,
 
     @Column(nullable = false, name = "observation_time")
     @Id
-    val observationTime: ZonedDateTime,
+    var observationTime: ZonedDateTime,
 
     @Column(name = "observation_time_end")
-    val observationTimeEnd: ZonedDateTime?,
+    var observationTimeEnd: ZonedDateTime?,
 
-    val type: String,
+    var type: String,
 
     @Column(name = "value_textual")
-    val valueTextual: String?,
+    var valueTextual: String?,
 
     @Column(name = "value_numeric")
-    val valueNumeric: Double?,
+    var valueNumeric: Double?,
 
-) {
+    ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
