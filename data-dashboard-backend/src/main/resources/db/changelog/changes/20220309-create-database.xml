@@ -52,14 +52,5 @@
             <column name="VALUE_TEXTUAL" type="clob"/>
         </createTable>
 
-        <createIndex tableName="observation" indexName="idx_observation_subject_in_topic">
-            <column name="PROJECT"/>
-            <column name="SUBJECT"/>
-            <column name="TOPIC_NAME"/>
-            <column name="CATEGORY"/>
-            <column name="VARIABLE"/>
-            <column name="OBSERVATION_TIME"/>
-        </createIndex>
-
     </changeSet>
 </databaseChangeLog>
