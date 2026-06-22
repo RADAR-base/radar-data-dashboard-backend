@@ -38,7 +38,6 @@ import org.mockito.kotlin.reset
 import org.mockito.kotlin.stub
 import org.radarbase.datadashboard.backend.resource.paramconverter.InstantParamConverterProvider
 import org.radarbase.datadashboard.backend.service.ObservationService
-import org.radarbase.datadashboard.backend.service.ObservationTypeService
 import org.radarbase.datadashboard.backend.util.MockAsyncCoroutineService
 import org.radarbase.datadashboard.backend.util.TestUtil.Companion.category
 import org.radarbase.datadashboard.backend.util.TestUtil.Companion.projectId
@@ -59,9 +58,6 @@ class ValueResourceTest : JerseyTest() {
 
     @Mock
     lateinit var observationService: ObservationService
-
-    @Mock
-    lateinit var observationTypeService: ObservationTypeService
 
     private var capturedFunc: ((Iterable<Double>) -> Number?)? = null
 
@@ -102,7 +98,6 @@ class ValueResourceTest : JerseyTest() {
         resourceConfig.register(object : AbstractBinder() {
             override fun configure() {
                 bind(observationService).to(ObservationService::class.java)
-                bind(observationTypeService).to(ObservationTypeService::class.java)
             }
         })
         return resourceConfig
@@ -111,11 +106,10 @@ class ValueResourceTest : JerseyTest() {
     @BeforeEach
     fun init() {
         reset(observationService)
-        reset(observationTypeService)
         capturedFunc = null
         observationService.stub {
             onBlocking {
-                getNumericValues(
+                getValues(
                     projectId = anyString(),
                     subjectId = anyString(),
                     topicId = anyString(),
@@ -126,7 +120,7 @@ class ValueResourceTest : JerseyTest() {
                 )
             }.doReturn(numericValues)
             onBlocking {
-                getTextValues(
+                getValues(
                     projectId = anyString(),
                     subjectId = anyString(),
                     topicId = anyString(),
@@ -151,14 +145,6 @@ class ValueResourceTest : JerseyTest() {
                 capturedFunc = invocation.getArgument(7)
                 stubCalculationResponse
             }
-        }
-        observationTypeService.stub {
-            onBlocking {
-                hasNumericValues(anyString(), anyOrNull(), eq("text-variable"))
-            }.doReturn(false)
-            onBlocking {
-                hasNumericValues(anyString(), anyOrNull(), eq("numeric-variable"))
-            }.doReturn(true)
         }
     }
 

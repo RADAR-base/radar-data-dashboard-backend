@@ -110,6 +110,25 @@ class ObservationServiceImpl(
             until = until,
         )
 
+    override suspend fun getValues(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String?,
+        variable: String,
+        since: Instant?,
+        until: Instant?,
+    ): List<Any> =
+        observationRepository.getValues(
+            projectId = projectId,
+            subjectId = subjectId,
+            topicId = topicId,
+            category = category,
+            variable = variable,
+            since = since,
+            until = until,
+        )
+
     override suspend fun calculateValueByCategoryAndVariable(
         projectId: String,
         subjectId: String,
@@ -121,4 +140,5 @@ class ObservationServiceImpl(
         func: (Iterable<Double>) -> Number?,
     ): Number? =
         func(observationRepository.getNumericValues(projectId, subjectId, topicId, category, variable, since, until))
+
 }

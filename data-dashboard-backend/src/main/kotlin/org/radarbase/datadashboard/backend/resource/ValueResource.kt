@@ -31,7 +31,6 @@ import jakarta.ws.rs.container.Suspended
 import jakarta.ws.rs.core.Context
 import org.radarbase.auth.authorization.Permission
 import org.radarbase.datadashboard.backend.service.ObservationService
-import org.radarbase.datadashboard.backend.service.ObservationTypeService
 import org.radarbase.jersey.auth.Authenticated
 import org.radarbase.jersey.auth.NeedsPermission
 import org.radarbase.jersey.service.AsyncCoroutineService
@@ -45,7 +44,6 @@ import java.time.Instant
 @Singleton
 class ValueResource(
     @Context private val observationService: ObservationService,
-    @Context private val typeService: ObservationTypeService,
     @Context private val asyncService: AsyncCoroutineService,
 ) {
 
@@ -62,15 +60,7 @@ class ValueResource(
         @QueryParam("until") until: Instant?,
         @Suspended asyncResponse: AsyncResponse,
     ) = asyncService.runAsCoroutine(asyncResponse) {
-        // when the data type cannot be determined, this means that there are no
-        // observations for this subject. return emtpy list in this case.
-        val isNumericVariable =
-            typeService.hasNumericValues(topicId, category, variable) ?: return@runAsCoroutine listOf()
-        if (isNumericVariable) {
-            observationService.getNumericValues(projectId, subjectId, topicId, category, variable, since, until)
-        } else {
-            observationService.getTextValues(projectId, subjectId, topicId, category, variable, since, until)
-        }
+        observationService.getValues(projectId, subjectId, topicId, category, variable, since, until)
     }
 
     @GET
@@ -142,7 +132,6 @@ class ValueResource(
         asyncResponse = asyncResponse
     ) { it.average() }
 
-
     @GET
     @Path("variable/{variable}/values")
     @NeedsPermission(Permission.MEASUREMENT_READ, "projectId", "subjectId")
@@ -155,29 +144,14 @@ class ValueResource(
         @QueryParam("until") until: Instant?,
         @Suspended asyncResponse: AsyncResponse,
     ) = asyncService.runAsCoroutine(asyncResponse) {
-        // When the data type cannot be determined, this means that there are no
-        // observations for this subject. return emtpy list in this case.
-        val isNumericVariable =
-            typeService.hasNumericValues(topic = topicId, variable = variable) ?: return@runAsCoroutine listOf()
-        if (isNumericVariable) {
-            observationService.getNumericValues(
-                projectId = projectId,
-                subjectId = subjectId,
-                topicId = topicId,
-                variable = variable,
-                since = since,
-                until = until,
-            )
-        } else {
-            observationService.getTextValues(
-                projectId = projectId,
-                subjectId = subjectId,
-                topicId = topicId,
-                variable = variable,
-                since = since,
-                until = until,
-            )
-        }
+        observationService.getValues(
+            projectId = projectId,
+            subjectId = subjectId,
+            topicId = topicId,
+            variable = variable,
+            since = since,
+            until = until,
+        )
     }
 
     @GET
@@ -254,24 +228,15 @@ class ValueResource(
         asyncResponse: AsyncResponse,
         func: (Iterable<Double>) -> Number?,
     ) = asyncService.runAsCoroutine(asyncResponse) {
-        when (typeService.hasNumericValues(topicId, category, variable)) {
-            true -> {
-                observationService.calculateValueByCategoryAndVariable(
-                    projectId = projectId,
-                    subjectId = subjectId,
-                    topicId = topicId,
-                    category = category,
-                    variable = variable,
-                    since = since,
-                    until = until,
-                    func = func,
-                )
-            }
-            // When no observations are found in the database return null.
-            null -> null
-            // Since observations may acquire numeric values over time during data
-            // collection, silently return null (do not terminate with an error).
-            false -> null
-        }
+        observationService.calculateValueByCategoryAndVariable(
+            projectId = projectId,
+            subjectId = subjectId,
+            topicId = topicId,
+            category = category,
+            variable = variable,
+            since = since,
+            until = until,
+            func = func,
+        )
     }
 }

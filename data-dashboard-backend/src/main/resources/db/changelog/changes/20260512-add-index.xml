@@ -27,6 +27,7 @@
     -->
     <changeSet id="Add index" author="pim" context="prod">
 
+        <!-- Primary index optimized for TimescaleDB chunks and filtering patterns. -->
         <createIndex tableName="observation" indexName="idx_observation">
             <column name="PROJECT"/>
             <column name="SUBJECT"/>
@@ -36,13 +37,5 @@
             <column name="CATEGORY"/>
             <column name="OBSERVATION_TIME"/>
         </createIndex>
-
-        <createIndex tableName="observation" indexName="idx_observation_metadata">
-            <column name="TOPIC_NAME"/>
-            <column name="CATEGORY"/>
-            <column name="VARIABLE"/>
-            <column name="TYPE"/>
-        </createIndex>
-
     </changeSet>
 </databaseChangeLog>

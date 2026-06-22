@@ -22,7 +22,6 @@ import jakarta.inject.Provider
 import jakarta.persistence.EntityManager
 import jakarta.ws.rs.core.Context
 import org.hibernate.exception.SQLGrammarException
-import org.radarbase.datadashboard.backend.util.cacheKey
 import org.radarbase.datadashboard.backend.domain.model.Observation
 import org.radarbase.jersey.hibernate.HibernateRepository
 import org.radarbase.jersey.service.AsyncCoroutineService
@@ -100,20 +99,6 @@ class ObservationRepositoryImpl(
         return observations
     }
 
-    override suspend fun getNumericVariableTypes(): Map<String, Boolean> {
-        val query = "SELECT DISTINCT o.topic, o.category, o.variable, o.type FROM Observation o"
-        return transact {
-            @Suppress("UNCHECKED_CAST")
-            (createQuery(query, Array::class.java).resultList as List<Array<Any?>>)
-                .groupBy({ (topic, category, variable) ->
-                    cacheKey(topic as String, category as String?, variable as String)
-                }, { (_, _, _, type) ->
-                    type == "INTEGER" || type == "DOUBLE"
-                })
-                .mapValues { (_, values) -> values.any { it } }
-        }
-    }
-
     override suspend fun getNumericValues(
         projectId: String,
         subjectId: String,
@@ -124,7 +109,7 @@ class ObservationRepositoryImpl(
         until: Instant?,
     ): List<Double> {
         val query = buildString {
-            append("SELECT o.valueNumeric FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.variable = :variable")
+            append("SELECT o.valueNumeric FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.variable = :variable AND o.valueNumeric IS NOT NULL")
             if (category != null) append(" AND o.category = :category")
             if (since != null) append(" AND o.observationTime >= :since")
             if (until != null) append(" AND o.observationTime < :until")
@@ -159,7 +144,7 @@ class ObservationRepositoryImpl(
         until: Instant?,
     ): List<String> {
         val query = buildString {
-            append("SELECT o.valueTextual FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.variable = :variable")
+            append("SELECT o.valueTextual FROM Observation o WHERE o.project = :projectId AND o.subject = :subjectId AND o.topic = :topicId AND o.variable = :variable AND o.valueTextual IS NOT NULL")
             if (category != null) append(" AND o.category = :category")
             if (since != null) append(" AND o.observationTime >= :since")
             if (until != null) append(" AND o.observationTime < :until")
@@ -182,6 +167,19 @@ class ObservationRepositoryImpl(
             projectId
         )
         return performQuery<String>(query, params)
+    }
+
+    override suspend fun getValues(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String?,
+        variable: String,
+        since: Instant?,
+        until: Instant?,
+    ): List<Any> = buildList {
+        addAll(getNumericValues(projectId, subjectId, topicId, category, variable, since, until))
+        addAll(getTextValues(projectId, subjectId, topicId, category, variable, since, until))
     }
 
     private suspend inline fun <reified T> performQuery(

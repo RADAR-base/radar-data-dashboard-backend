@@ -71,4 +71,14 @@ interface ObservationService {
         until: Instant? = null,
         func: (Iterable<Double>) -> Number?,
     ): Number?
+
+    suspend fun getValues(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String? = null,
+        variable: String,
+        since: Instant? = null,
+        until: Instant? = null,
+    ): List<Any?>
 }

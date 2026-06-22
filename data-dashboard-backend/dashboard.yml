@@ -35,5 +35,3 @@ hazelcast:
           service-port: 5801
           namespace: default
 
-variableTypeCache:
-  refreshDuration: 1800

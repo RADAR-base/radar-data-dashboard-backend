@@ -177,6 +177,19 @@ class ObservationRepositoryImplTest : RepositoryTest() {
     }
 
     @Test
+    fun testGetAllValues() = runBlocking {
+        val values = repository.getValues(
+            projectId = "project-1",
+            subjectId = "sub-1",
+            topicId = "questionnaire_answer",
+            category = "baseline_questions",
+            variable = "Variable_With_Mixed_Ksql_Type",
+        )
+        assertEquals(2, values.size)
+        assertEquals(listOf<Any>(5.0, "Many"), values)
+    }
+
+    @Test
     fun testObservationWithNullCategory() = runBlocking {
         val observations = repository.getObservations(
             projectId = "project-1",
@@ -201,14 +214,14 @@ class ObservationRepositoryImplTest : RepositoryTest() {
         }
     }
 
-    @Test
-    fun testGetNumericVariableTypes() = runBlocking {
-        val types = repository.getNumericVariableTypes()
-        assertEquals(5, types.size)
-        assertEquals(true, types["questionnaire_answer:baseline_questions:Perceived_Pain_Score"])
-        assertEquals(true, types["phone_battery_level:null:batteryLevel"])
-        assertEquals(false, types["phone_battery_level:null:status"])
-        assertEquals(false, types["questionnaire_answer:followup_questions:Name_Of_Physician"])
-        assertEquals(true, types["questionnaire_answer:baseline_questions:Variable_With_Mixed_Ksql_Type"])
-    }
+//    @Test
+//    fun testGetNumericVariableTypes() = runBlocking {
+//        val types = repository.getNumericVariableTypes()
+//        assertEquals(5, types.size)
+//        assertEquals(true, types["questionnaire_answer:baseline_questions:Perceived_Pain_Score"])
+//        assertEquals(true, types["phone_battery_level:null:batteryLevel"])
+//        assertEquals(false, types["phone_battery_level:null:status"])
+//        assertEquals(false, types["questionnaire_answer:followup_questions:Name_Of_Physician"])
+//        assertEquals(true, types["questionnaire_answer:baseline_questions:Variable_With_Mixed_Ksql_Type"])
+//    }
 }

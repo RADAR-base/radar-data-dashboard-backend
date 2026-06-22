@@ -28,13 +28,11 @@ data class DashboardApiConfig(
     ),
     val database: DatabaseConfig = DatabaseConfig(),
     val hazelcast: HazelcastConfig = HazelcastConfig(),
-    val variableTypeCache: VariableTypeCacheConfig = VariableTypeCacheConfig(),
 ) {
     fun withEnv(): DashboardApiConfig = copy(
         service = service.withEnv(),
         auth = auth.withEnv(),
         database = database.withEnv(),
         hazelcast = hazelcast.withEnv(),
-        variableTypeCache = variableTypeCache.withEnv()
     )
 }

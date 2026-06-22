@@ -40,8 +40,6 @@ interface ObservationRepository {
         until: Instant? = null,
     ): List<Observation>
 
-    suspend fun getNumericVariableTypes(): Map<String,Boolean>
-
     suspend fun getNumericValues(
         projectId: String,
         subjectId: String,
@@ -61,4 +59,14 @@ interface ObservationRepository {
         since: Instant? = null,
         until: Instant? = null,
     ): List<String>
+
+    suspend fun getValues(
+        projectId: String,
+        subjectId: String,
+        topicId: String,
+        category: String? = null,
+        variable: String,
+        since: Instant? = null,
+        until: Instant? = null,
+    ): List<Any>
 }
