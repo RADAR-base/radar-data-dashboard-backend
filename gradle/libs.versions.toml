@@ -21,9 +21,9 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 radar-jersey = { module = "org.radarbase:radar-jersey", version.ref = "radarJersey" }
 radar-jerseyHibernate = { module = "org.radarbase:radar-jersey-hibernate", version.ref = "radarJersey" }
 radar-commonsKotlin = { module = "org.radarbase:radar-commons-kotlin", version.ref = "radarCommons" }
-hazelcast = { group = "com.hazelcast", name = "hazelcast", version.ref = "hazelcast" }
-hazelcast-hybernate53 = { group = "com.hazelcast", name = "hazelcast-hibernate53", version.ref = "hazelcastHibernate" }
-hazelcast-kubernetes = { group = "com.hazelcast", name = "hazelcast-kubernetes", version.ref = "hazelcastKubernetes" }
+hazelcast = { module = "com.hazelcast:hazelcast", version.ref = "hazelcast" }
+hazelcast-hybernate53 = { module = "com.hazelcast:hazelcast-hibernate53", version.ref = "hazelcastHibernate" }
+hazelcast-kubernetes = { module = "com.hazelcast:hazelcast-kubernetes", version.ref = "hazelcastKubernetes" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoKotlin" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
