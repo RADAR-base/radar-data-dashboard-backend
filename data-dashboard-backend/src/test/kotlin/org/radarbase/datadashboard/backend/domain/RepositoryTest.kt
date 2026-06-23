@@ -33,6 +33,8 @@ import org.radarbase.datadashboard.backend.util.H2HibernateNamingStrategy
 import java.sql.DriverManager
 import java.util.*
 
+// This class has overlap with radar-jersey-hibernate's DatabaseInitialization.
+// I was unable to leverage it DatabaseInitialization here.
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class RepositoryTest {
     protected lateinit var emf: EntityManagerFactory
