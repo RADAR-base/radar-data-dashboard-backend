@@ -24,7 +24,6 @@ import liquibase.Liquibase
 import liquibase.database.DatabaseFactory
 import liquibase.database.jvm.JdbcConnection
 import liquibase.resource.ClassLoaderResourceAccessor
-import org.hibernate.boot.model.naming.PhysicalNamingStrategy
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
@@ -55,7 +54,7 @@ abstract class RepositoryTest {
             val liquibase = Liquibase(
                 "db/changelog/changes/db.changelog-master.xml",
                 ClassLoaderResourceAccessor(),
-                database
+                database,
             )
             liquibase.update(LIQUIBASE_CONTEXT)
         }
@@ -77,7 +76,7 @@ abstract class RepositoryTest {
         configuration.addAnnotatedClass(Observation::class.java)
         configuration.addProperties(props)
         configuration.setPhysicalNamingStrategy(
-            H2HibernateNamingStrategy()
+            H2HibernateNamingStrategy(),
         )
 
         emf = configuration.buildSessionFactory()

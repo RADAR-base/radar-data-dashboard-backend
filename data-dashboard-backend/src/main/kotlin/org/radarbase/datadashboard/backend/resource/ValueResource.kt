@@ -83,7 +83,7 @@ class ValueResource(
         variable = variable,
         since = since,
         until = until,
-        asyncResponse = asyncResponse
+        asyncResponse = asyncResponse,
     ) { it.minOrNull() }
 
     @GET
@@ -106,7 +106,7 @@ class ValueResource(
         variable = variable,
         since = since,
         until = until,
-        asyncResponse = asyncResponse
+        asyncResponse = asyncResponse,
     ) { it.maxOrNull() }
 
     @GET
@@ -129,7 +129,7 @@ class ValueResource(
         variable = variable,
         since = since,
         until = until,
-        asyncResponse = asyncResponse
+        asyncResponse = asyncResponse,
     ) { it.average() }
 
     @GET
@@ -172,7 +172,7 @@ class ValueResource(
         variable = variable,
         since = since,
         until = until,
-        asyncResponse = asyncResponse
+        asyncResponse = asyncResponse,
     ) { it.minOrNull() }
 
     @GET
@@ -193,7 +193,7 @@ class ValueResource(
         variable = variable,
         since = since,
         until = until,
-        asyncResponse = asyncResponse
+        asyncResponse = asyncResponse,
     ) { it.maxOrNull() }
 
     @GET
@@ -214,7 +214,7 @@ class ValueResource(
         variable = variable,
         since = since,
         until = until,
-        asyncResponse = asyncResponse
+        asyncResponse = asyncResponse,
     ) { it.average() }
 
     private fun calculateValue(

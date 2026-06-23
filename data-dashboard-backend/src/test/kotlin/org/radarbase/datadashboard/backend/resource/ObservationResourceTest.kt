@@ -39,6 +39,7 @@ import org.mockito.kotlin.stub
 import org.mockito.kotlin.verify
 import org.radarbase.datadashboard.backend.api.ObservationListDto
 import org.radarbase.datadashboard.backend.domain.mapper.toDto
+import org.radarbase.datadashboard.backend.domain.model.Observation
 import org.radarbase.datadashboard.backend.resource.paramconverter.InstantParamConverterProvider
 import org.radarbase.datadashboard.backend.service.ObservationService
 import org.radarbase.datadashboard.backend.util.MockAsyncCoroutineService
@@ -49,7 +50,6 @@ import org.radarbase.datadashboard.backend.util.TestUtil.Companion.projectId
 import org.radarbase.datadashboard.backend.util.TestUtil.Companion.subjectId
 import org.radarbase.datadashboard.backend.util.TestUtil.Companion.topicId
 import org.radarbase.datadashboard.backend.util.buildTarget
-import org.radarbase.datadashboard.backend.domain.model.Observation
 import org.radarbase.jersey.config.ConfigLoader
 import org.radarbase.jersey.enhancer.EnhancerFactory
 import org.radarbase.jersey.enhancer.Enhancers
@@ -153,9 +153,9 @@ class ObservationResourceTest : JerseyTest() {
             "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/observations, null, 2021-06-01T00:00:00Z",
             "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/observations, null, 2021-06-01T00:00:00Z",
             "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/observations, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
-            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/observations, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z"
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/observations, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
         ],
-        nullValues = ["null"]
+        nullValues = ["null"],
     )
     fun testGetObservations(url: String, since: String?, until: String?) = runBlocking {
         // Since a parameterized test is used, the reset and init functions are called for each test case.

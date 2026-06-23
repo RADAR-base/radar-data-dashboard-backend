@@ -28,14 +28,13 @@ import org.mockito.kotlin.stub
 import org.radarbase.datadashboard.backend.api.ObservationListDto
 import org.radarbase.datadashboard.backend.domain.ObservationRepositoryImpl
 import org.radarbase.datadashboard.backend.domain.mapper.toDto
+import org.radarbase.datadashboard.backend.domain.model.Observation
 import org.radarbase.datadashboard.backend.util.ObservationType
 import org.radarbase.datadashboard.backend.util.TestUtil.Companion.category
 import org.radarbase.datadashboard.backend.util.TestUtil.Companion.createObservation
 import org.radarbase.datadashboard.backend.util.TestUtil.Companion.projectId
 import org.radarbase.datadashboard.backend.util.TestUtil.Companion.subjectId
 import org.radarbase.datadashboard.backend.util.TestUtil.Companion.topicId
-import org.radarbase.datadashboard.backend.domain.model.Observation
-import org.radarbase.datadashboard.backend.service.ObservationServiceImpl
 
 class ObservationServiceImplTest {
 
@@ -89,7 +88,11 @@ class ObservationServiceImplTest {
     fun test_getObservations1() = runBlocking {
         // Call the ObservationService (class under test) to get the observations.
         val result = observationService.getObservations(
-            projectId = projectId, subjectId = subjectId, topicId = topicId, since = null, until = null
+            projectId = projectId,
+            subjectId = subjectId,
+            topicId = topicId,
+            since = null,
+            until = null,
         )
 
         // Check if the result is as expected (observations transformed to ObservationListDto).
@@ -106,9 +109,8 @@ class ObservationServiceImplTest {
             subjectId = subjectId,
             topicId = topicId,
             category = category,
-            variable = "numeric-variable"
+            variable = "numeric-variable",
         ) { it.maxOrNull() }
         assert(result == 6.0)
     }
-
 }

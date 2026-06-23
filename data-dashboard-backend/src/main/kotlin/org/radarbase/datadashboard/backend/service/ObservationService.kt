@@ -50,7 +50,6 @@ interface ObservationService {
         until: Instant? = null,
     ): List<Double>
 
-
     suspend fun getTextValues(
         projectId: String,
         subjectId: String,

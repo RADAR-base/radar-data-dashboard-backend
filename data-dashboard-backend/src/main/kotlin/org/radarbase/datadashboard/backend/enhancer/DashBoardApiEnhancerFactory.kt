@@ -20,7 +20,6 @@ package org.radarbase.datadashboard.backend.enhancer
 
 import org.radarbase.datadashboard.backend.config.DashboardApiConfig
 import org.radarbase.datadashboard.backend.domain.model.Observation
-import org.radarbase.datadashboard.backend.enhancer.DashboardApiEnhancer
 import org.radarbase.jersey.enhancer.EnhancerFactory
 import org.radarbase.jersey.enhancer.Enhancers
 import org.radarbase.jersey.enhancer.JerseyResourceEnhancer
@@ -38,14 +37,18 @@ class DashBoardApiEnhancerFactory(
         add(Enhancers.health)
         add(Enhancers.exception)
         add(Enhancers.mapper)
-        val hazelcastEnhancedProperties = if (config.hazelcast.enable) mapOf(
-            "hibernate.cache.use_second_level_cache" to "true",
-            "hibernate.cache.region.factory_class" to "com.hazelcast.hibernate.HazelcastLocalCacheRegionFactory",
-            "hibernate.cache.hazelcast.instance_name" to config.hazelcast.instanceName,
-        ) else emptyMap()
+        val hazelcastEnhancedProperties = if (config.hazelcast.enable) {
+            mapOf(
+                "hibernate.cache.use_second_level_cache" to "true",
+                "hibernate.cache.region.factory_class" to "com.hazelcast.hibernate.HazelcastLocalCacheRegionFactory",
+                "hibernate.cache.hazelcast.instance_name" to config.hazelcast.instanceName,
+            )
+        } else {
+            emptyMap()
+        }
         val databaseConfig = config.database.copy(
             managedClasses = listOf(Observation::class.jvmName),
-            properties = hazelcastEnhancedProperties + config.database.properties
+            properties = hazelcastEnhancedProperties + config.database.properties,
         )
         add(HibernateResourceEnhancer(databaseConfig))
         add(HibernatePersistenceResourceEnhancer(config.hazelcast))

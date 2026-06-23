@@ -42,7 +42,7 @@ class TestUtil {
                     "string-json-variable",
                     "STRING_JSON",
                     "{\"key\": \"value\"}",
-                    null
+                    null,
                 )
             }
         }
@@ -61,9 +61,7 @@ class TestUtil {
                 valueTextual = valueTextual,
                 valueNumeric = valueNumeric,
             )
-
     }
-
 }
 
 fun JerseyTest.buildTarget(url: String, since: String?, until: String?): WebTarget {

@@ -48,7 +48,6 @@ class HibernatePersistenceResourceEnhancer(
             bind(hazelcastInstance)
                 .to(HazelcastInstance::class.java)
                 .`in`(Singleton::class.java)
-
         }
     }
 }

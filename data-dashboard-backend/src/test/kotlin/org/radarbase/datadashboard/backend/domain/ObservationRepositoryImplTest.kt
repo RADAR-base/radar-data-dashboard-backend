@@ -147,7 +147,6 @@ class ObservationRepositoryImplTest : RepositoryTest() {
         assertEquals(count, observations.size)
     }
 
-
     @Test
     fun testGetNumericValues() = runBlocking {
         val values = repository.getNumericValues(

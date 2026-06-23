@@ -22,7 +22,6 @@ import jakarta.ws.rs.core.Context
 import org.radarbase.datadashboard.backend.api.ObservationListDto
 import org.radarbase.datadashboard.backend.domain.ObservationRepository
 import org.radarbase.datadashboard.backend.domain.mapper.toDto
-import org.radarbase.datadashboard.backend.service.ObservationService
 import java.time.Instant
 
 class ObservationServiceImpl(
@@ -41,7 +40,7 @@ class ObservationServiceImpl(
                 subjectId = subjectId,
                 topicId = topicId,
                 since = since,
-                until = until
+                until = until,
             )
         return ObservationListDto(
             result.map { it.toDto() },
@@ -140,5 +139,4 @@ class ObservationServiceImpl(
         func: (Iterable<Double>) -> Number?,
     ): Number? =
         func(observationRepository.getNumericValues(projectId, subjectId, topicId, category, variable, since, until))
-
 }

@@ -177,5 +177,4 @@ class ObservationResource(
             until = until,
         ).observations.size
     }
-
 }

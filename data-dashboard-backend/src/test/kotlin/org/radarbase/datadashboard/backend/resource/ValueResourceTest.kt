@@ -158,9 +158,9 @@ class ValueResourceTest : JerseyTest() {
             "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values, null, 2021-06-01T00:00:00Z",
             "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values, null, 2021-06-01T00:00:00Z",
             "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
-            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z"
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
         ],
-        nullValues = ["null"]
+        nullValues = ["null"],
     )
     fun testGetNumbers(url: String, since: String?, until: String?) = runBlocking {
         buildTarget(url, since, until).request().get().use { response ->
@@ -180,9 +180,9 @@ class ValueResourceTest : JerseyTest() {
             "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/text-variable/values, null, 2021-06-01T00:00:00Z",
             "project/$projectId/subject/$subjectId/topic/$topicId/variable/text-variable/values, null, 2021-06-01T00:00:00Z",
             "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/text-variable/values, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
-            "project/$projectId/subject/$subjectId/topic/$topicId/variable/text-variable/values, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z"
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/text-variable/values, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
         ],
-        nullValues = ["null"]
+        nullValues = ["null"],
     )
     fun testGetText(url: String, since: String?, until: String?) = runBlocking {
         buildTarget(url, since, until).request().get().use { response ->
@@ -202,9 +202,9 @@ class ValueResourceTest : JerseyTest() {
             "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/max, null, 2021-06-01T00:00:00Z",
             "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/max, null, 2021-06-01T00:00:00Z",
             "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/max, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
-            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/max, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z"
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/max, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
         ],
-        nullValues = ["null"]
+        nullValues = ["null"],
     )
     fun testGetMax(url: String, since: String?, until: String?) = runBlocking {
         buildTarget(url, since, until).request().get().use { response ->
@@ -227,9 +227,9 @@ class ValueResourceTest : JerseyTest() {
             "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/min, null, 2021-06-01T00:00:00Z",
             "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/min, null, 2021-06-01T00:00:00Z",
             "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/min, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
-            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/min, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z"
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/min, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
         ],
-        nullValues = ["null"]
+        nullValues = ["null"],
     )
     fun testGetMin(url: String, since: String?, until: String?) = runBlocking {
         buildTarget(url, since, until).request().get().use { response ->
@@ -251,9 +251,9 @@ class ValueResourceTest : JerseyTest() {
             "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/avg, null, 2021-06-01T00:00:00Z",
             "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/avg, null, 2021-06-01T00:00:00Z",
             "project/$projectId/subject/$subjectId/topic/$topicId/category/$category/variable/numeric-variable/values/avg, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
-            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/avg, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z"
+            "project/$projectId/subject/$subjectId/topic/$topicId/variable/numeric-variable/values/avg, 2020-06-01T00:00:00Z, 2021-06-01T00:00:00Z",
         ],
-        nullValues = ["null"]
+        nullValues = ["null"],
     )
     fun testGetAverage(url: String, since: String?, until: String?) = runBlocking {
         buildTarget(url, since, until).request().get().use { response ->
@@ -264,5 +264,4 @@ class ValueResourceTest : JerseyTest() {
         val testData = listOf(10.0, 20.0, 30.0)
         assertEquals(20.0, capturedFunc?.invoke(testData))
     }
-
 }

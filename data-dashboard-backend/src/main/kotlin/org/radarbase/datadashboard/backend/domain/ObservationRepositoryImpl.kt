@@ -91,11 +91,12 @@ class ObservationRepositoryImpl(
             category,
             variable,
             subjectId,
-            projectId
+            projectId,
         )
         val observations = performQuery<Observation>(query, params)
-        if (category == null && observations.any { it.category != null })
+        if (category == null && observations.any { it.category != null }) {
             throw IllegalStateException("Category was null in request, but observation had category. A category must be supplied for this variable.")
+        }
         return observations
     }
 
@@ -129,7 +130,7 @@ class ObservationRepositoryImpl(
             category,
             variable,
             subjectId,
-            projectId
+            projectId,
         )
         return performQuery<Double>(query, params)
     }
@@ -164,7 +165,7 @@ class ObservationRepositoryImpl(
             category,
             variable,
             subjectId,
-            projectId
+            projectId,
         )
         return performQuery<String>(query, params)
     }
