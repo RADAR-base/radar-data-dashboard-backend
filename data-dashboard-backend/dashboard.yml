@@ -20,3 +20,17 @@ database:
   properties:
     hibernate.globally_quoted_identifiers: true
     hibernate.physical_naming_strategy: org.radarbase.datadashboard.api.domain.model.CamelCaseToUppercaseColumnNamingStrategy
+
+hazelcast:
+  enable: false
+  network:
+    port: 5801
+    join:
+      multicastConfig:
+        enabled: false
+      kubernetesConfig:
+        enabled: true
+        properties:
+          service-name: data-dashboard-backend
+          service-port: 5801
+          namespace: default

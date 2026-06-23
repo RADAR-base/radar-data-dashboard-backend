@@ -19,6 +19,10 @@ dependencies {
     }
     implementation(libs.radar.commonsKotlin)
 
+    implementation(libs.hazelcast)
+    implementation(libs.hazelcast.hybernate53)
+    implementation(libs.hazelcast.kubernetes)
+
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.jersey.testFramework.core)

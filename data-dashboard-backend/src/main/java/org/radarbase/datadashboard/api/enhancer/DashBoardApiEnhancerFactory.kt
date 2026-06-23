@@ -30,18 +30,22 @@ class DashBoardApiEnhancerFactory(
     private val config: DashboardApiConfig,
 ) : EnhancerFactory {
 
-    override fun createEnhancers(): List<JerseyResourceEnhancer> = listOf(
-        DashboardApiEnhancer(config),
-        Enhancers.radar(config.auth),
-        Enhancers.managementPortal(config.auth),
-        Enhancers.health,
-        Enhancers.exception,
-        HibernateResourceEnhancer(
-            config.database.copy(
-                managedClasses = listOf(
-                    Observation::class.jvmName,
-                ),
-            ),
-        ),
-    )
+    override fun createEnhancers(): List<JerseyResourceEnhancer> = buildList {
+        add(DashboardApiEnhancer(config))
+        add(Enhancers.radar(config.auth))
+        add(Enhancers.managementPortal(config.auth))
+        add(Enhancers.health)
+        add(Enhancers.exception)
+        val hazelcastEnhancedProperties = if (config.hazelcast.enable) mapOf(
+            "hibernate.cache.use_second_level_cache" to "true",
+            "hibernate.cache.region.factory_class" to "com.hazelcast.hibernate.HazelcastLocalCacheRegionFactory",
+            "hibernate.cache.hazelcast.instance_name" to config.hazelcast.instanceName,
+        ) else emptyMap<String, String>() + config.database.properties
+        val databaseConfig = config.database.copy(
+            managedClasses = listOf(Observation::class.jvmName),
+            properties = hazelcastEnhancedProperties
+        )
+        add(HibernateResourceEnhancer(databaseConfig))
+        add(HibernatePersistenceResourceEnhancer(config.hazelcast))
+    }
 }
