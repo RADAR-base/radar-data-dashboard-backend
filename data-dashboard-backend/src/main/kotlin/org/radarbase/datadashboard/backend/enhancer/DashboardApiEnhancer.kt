@@ -32,13 +32,14 @@ import org.radarbase.jersey.filter.Filters
 class DashboardApiEnhancer(
     private val config: DashboardApiConfig,
 ) : JerseyResourceEnhancer {
-    override val classes: Array<Class<*>>
-        get() = listOfNotNull(
-            Filters.cache,
-            Filters.logResponse,
-            if (config.service.enableCors == true) Filters.cors else null,
-            InstantParamConverterProvider::class.java,
-        ).toTypedArray()
+    override val classes = buildList {
+        add(Filters.logResponse)
+        add(Filters.cache)
+        add(InstantParamConverterProvider::class.java)
+        if (config.service.enableCors == true) {
+            add(Filters.cors)
+        }
+    }.toTypedArray()
 
     override val packages: Array<String> = arrayOf(
         "org.radarbase.datadashboard.backend.resource",
