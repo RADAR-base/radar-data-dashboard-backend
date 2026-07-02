@@ -8,25 +8,30 @@ postgresql = "42.7.11"
 log4j2 = "2.25.4"
 jersey = "3.1.3"
 mockitoKotlin = "5.1.0"
+junitParams = "5.10.0"
 h2 = "2.2.224"
 hazelcast = "5.4.0"
 hazelcastHibernate = "5.1.0"
 hazelcastKubernetes = "2.2.3"
+# Keep the same as in radar-jersey-hibernate
+liquibase = "4.33.0"
 
 [libraries]
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 radar-jersey = { module = "org.radarbase:radar-jersey", version.ref = "radarJersey" }
 radar-jerseyHibernate = { module = "org.radarbase:radar-jersey-hibernate", version.ref = "radarJersey" }
 radar-commonsKotlin = { module = "org.radarbase:radar-commons-kotlin", version.ref = "radarCommons" }
-hazelcast = { group = "com.hazelcast", name = "hazelcast", version.ref = "hazelcast" }
-hazelcast-hybernate53 = { group = "com.hazelcast", name = "hazelcast-hibernate53", version.ref = "hazelcastHibernate" }
-hazelcast-kubernetes = { group = "com.hazelcast", name = "hazelcast-kubernetes", version.ref = "hazelcastKubernetes" }
+hazelcast = { module = "com.hazelcast:hazelcast", version.ref = "hazelcast" }
+hazelcast-hybernate53 = { module = "com.hazelcast:hazelcast-hibernate53", version.ref = "hazelcastHibernate" }
+hazelcast-kubernetes = { module = "com.hazelcast:hazelcast-kubernetes", version.ref = "hazelcastKubernetes" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoKotlin" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+mockito-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitParams" }
 jersey-testFramework-core = { module = "org.glassfish.jersey.test-framework:jersey-test-framework-core", version.ref = "jersey" }
 jersey-testFramework-provider-grizzly2 = { module = "org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2", version.ref = "jersey" }
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
+liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase" }
 
 [plugins]
 radarRootProject = { id = "org.radarbase.radar-root-project", version.ref = "radarCommons" }
