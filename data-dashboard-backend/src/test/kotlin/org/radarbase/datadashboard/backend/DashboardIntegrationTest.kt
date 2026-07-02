@@ -34,6 +34,7 @@ import org.junit.jupiter.params.provider.CsvSource
 import org.radarbase.auth.authorization.AuthorizationOracle
 import org.radarbase.datadashboard.backend.config.DashboardApiConfig
 import org.radarbase.datadashboard.backend.enhancer.DashBoardApiEnhancerFactory
+import org.radarbase.datadashboard.backend.util.ProjectServiceStub
 import org.radarbase.jersey.auth.AuthValidator
 import org.radarbase.jersey.auth.disabled.DisabledAuthValidator
 import org.radarbase.jersey.auth.disabled.DisabledAuthorizationOracle
