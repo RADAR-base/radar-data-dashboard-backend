@@ -7,7 +7,7 @@ plugins {
 }
 
 application {
-    mainClass.set("org.radarbase.datadashboard.api.DashboardApi")
+    mainClass.set("org.radarbase.datadashboard.backend.DashboardApi")
 }
 
 dependencies {
@@ -25,9 +25,11 @@ dependencies {
 
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.mockito.params)
     testImplementation(libs.jersey.testFramework.core)
     testImplementation(libs.jersey.testFramework.provider.grizzly2)
     testImplementation(libs.h2)
+    testImplementation(libs.liquibase.core)
 }
 
 allOpen {

@@ -15,4 +15,10 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --all-projects --configuration-matching='^runtimeClasspath$' --severity-threshold=high
+          args: >-
+            --all-projects
+            --configuration-matching='^runtimeClasspath$'
+            --fail-on=upgradable
+            --severity-threshold=high
+            --policy-path=.snyk
+            --org=radar-base

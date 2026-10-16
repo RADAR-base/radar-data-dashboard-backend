@@ -36,7 +36,7 @@
             <column name="SOURCE" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="TOPIC" type="varchar(255)">
+            <column name="TOPIC_NAME" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="CATEGORY" type="varchar(255)"/>
@@ -51,12 +51,6 @@
             <column name="VALUE_NUMERIC" type="double"/>
             <column name="VALUE_TEXTUAL" type="clob"/>
         </createTable>
-
-        <createIndex tableName="observation" indexName="idx_observation_subject_in_topic">
-            <column name="PROJECT"/>
-            <column name="SUBJECT"/>
-            <column name="TOPIC"/>
-        </createIndex>
 
     </changeSet>
 </databaseChangeLog>

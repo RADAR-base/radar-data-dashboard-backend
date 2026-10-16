@@ -1,9 +1,13 @@
-PROJECT;SUBJECT;SOURCE;TOPIC;CATEGORY;VARIABLE;TYPE;VALUE_NUMERIC;VALUE_TEXTUAL;OBSERVATION_TIME;OBSERVATION_TIME_END
-project-1;sub-1;source-1;questionnaire_answer;baseline_questions;Perceived_Pain_Score;INTEGER;5;NULL;2021-02-20 00:00:00;NULL
-project-1;sub-1;source-1;questionnaire_answer;followup_questions;Name_Of_Physician;STRING;NULL;Dr.J.Adams;2021-02-20 00:00:00;NULL
-project-1;sub-2;source-1;questionnaire_answer;baseline_questions;Perceived_Pain_Score;INTEGER;2;NULL;2021-02-20 00:00:00;NULL
+PROJECT;SUBJECT;SOURCE;TOPIC_NAME;CATEGORY;VARIABLE;TYPE;VALUE_NUMERIC;VALUE_TEXTUAL;OBSERVATION_TIME;OBSERVATION_TIME_END
+project-1;sub-1;source-1;questionnaire_answer;baseline_questions;Perceived_Pain_Score;INTEGER;5;NULL;2021-01-20 00:00:00;NULL
+project-1;sub-1;source-1;questionnaire_answer;baseline_questions;Perceived_Pain_Score;INTEGER;10;NULL;2022-01-20 00:00:00;NULL
+project-1;sub-1;source-1;questionnaire_answer;baseline_questions;Perceived_Pain_Score;INTEGER;15;NULL;2023-01-20 00:00:00;NULL
+project-1;sub-1;source-1;questionnaire_answer;followup_questions;Name_Of_Physician;STRING;NULL;Dr.J.Adams;2021-01-21 00:00:00;NULL
+project-1;sub-2;source-1;questionnaire_answer;baseline_questions;Perceived_Pain_Score;INTEGER;2;NULL;2021-02-22 00:00:00;NULL
 project-1;sub-2;source-1;questionnaire_answer;followup_questions;Name_Of_Physician;STRING;NULL;Dr.G.Washington;2022-05-20 00:00:00;NULL
-project-1;sub-1;source-1;phone_battery_level;NULL;batteryLevel;INTEGER;5;NULL;2021-02-20 00:00:00;NULL
-project-1;sub-1;source-1;phone_battery_level;NULL;status;STRING;NULL;CHARGING;2021-02-20 00:00:00;NULL
-project-1;sub-2;source-1;phone_battery_level;NULL;batteryLevel;INTEGER;10;NULL;2021-02-20 00:00:00;NULL
-project-1;sub-2;source-1;phone_battery_level;NULL;status;STRING;NULL;FULL;2021-02-20 00:00:00;NULL
+project-1;sub-1;source-1;questionnaire_answer;baseline_questions;Variable_With_Mixed_Ksql_Type;INTEGER;5;NULL;2021-01-20 00:00:00;NULL
+project-1;sub-1;source-1;questionnaire_answer;baseline_questions;Variable_With_Mixed_Ksql_Type;STRING;NULL;Many;2022-01-20 00:00:00;NULL
+project-1;sub-1;source-1;phone_battery_level;NULL;batteryLevel;INTEGER;5;NULL;2021-02-21 00:00:00;NULL
+project-1;sub-1;source-1;phone_battery_level;NULL;status;STRING;NULL;CHARGING;2021-02-22 00:00:00;NULL
+project-1;sub-2;source-1;phone_battery_level;NULL;batteryLevel;INTEGER;10;NULL;2021-02-23 00:00:00;NULL
+project-1;sub-2;source-1;phone_battery_level;NULL;status;STRING;NULL;FULL;2021-02-24 00:00:00;NULL

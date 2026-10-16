@@ -25,5 +25,6 @@
 
     <include file="db/changelog/changes/20220309-create-database.xml"/>
     <include file="db/changelog/changes/20220321-insert-mock-data.xml"/>
+    <include file="db/changelog/changes/20260512-add-index.xml"/>
 
 </databaseChangeLog>

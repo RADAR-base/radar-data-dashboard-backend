@@ -19,7 +19,7 @@ database:
     contexts: [prod]
   properties:
     hibernate.globally_quoted_identifiers: true
-    hibernate.physical_naming_strategy: org.radarbase.datadashboard.api.domain.model.CamelCaseToUppercaseColumnNamingStrategy
+    hibernate.physical_naming_strategy: org.radarbase.datadashboard.backend.domain.hibernate.CamelCaseToUppercaseColumnNamingStrategy
 
 hazelcast:
   enable: false
@@ -34,3 +34,4 @@ hazelcast:
           service-name: data-dashboard-backend
           service-port: 5801
           namespace: default
+
